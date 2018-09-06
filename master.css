@@ -1,0 +1,14 @@
+canvas {
+  border: solid 1px black;
+}
+
+.row{
+    display:flex;
+    flex-direction:row;
+	justify-content: space-around;*/
+}
+
+.column{
+    display:flex;
+    flex-direction:column;
+}
