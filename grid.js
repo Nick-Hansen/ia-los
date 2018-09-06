@@ -517,21 +517,7 @@ function pathsOverlap(attackingCorner, defendingCorner1, defendingCorner2) {
 	var path2_deltaX = defendingCorner2.x - attackingCorner.x;
 	var path2_deltaY = defendingCorner2.y - attackingCorner.y;
 
-	//adjacent tiles
-	if ((attackingTile.x == defendingTile.x + 1 && attackingTile.y == defendingTile.y + 1) ||
-		(attackingTile.x == defendingTile.x && attackingTile.y == defendingTile.y + 1) ||
-		(attackingTile.x == defendingTile.x - 1 && attackingTile.y == defendingTile.y + 1) ||
-		//
-		(attackingTile.x == defendingTile.x + 1 && attackingTile.y == defendingTile.y) ||
-		(attackingTile.x == defendingTile.x - 1 && attackingTile.y == defendingTile.y) ||
-		//
-		(attackingTile.x == defendingTile.x + 1 && attackingTile.y == defendingTile.y - 1) ||
-		(attackingTile.x == defendingTile.x && attackingTile.y == defendingTile.y - 1) ||
-		(attackingTile.x == defendingTile.x - 1 && attackingTile.y == defendingTile.y - 1)) { 
-		return false; 
-	}
-	//horizontal lines
-	else if (path1_deltaY == 0 && path2_deltaY == 0) {
+	if (path1_deltaY == 0 && path2_deltaY == 0) {
 		var path1_xDirection = path1_deltaX < 0 ? -1 : 1;
 		var path2_xDirection = path2_deltaX < 0 ? -1 : 1;
 
