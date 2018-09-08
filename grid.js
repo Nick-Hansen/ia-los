@@ -408,13 +408,13 @@ function updateLinesOfSight(losPaths) {
 function drawLineOfSight(attackingCorner, defendingCorner) {
 	context.beginPath();
 	context.strokeStyle = "red";
+	context.lineWidth = 1;
 	var startX = (attackingCorner.x * boxWidth) + horizontal_padding;
 	var startY = (attackingCorner.y * boxWidth) + vertical_padding;
 	var endX = (defendingCorner.x * boxWidth) + horizontal_padding;
 	var endY = (defendingCorner.y * boxWidth) + vertical_padding;
 	context.moveTo(startX, startY);
 	context.lineTo(endX, endY);
-	context.lineWidth = 3;
 	context.stroke();
 }
 
