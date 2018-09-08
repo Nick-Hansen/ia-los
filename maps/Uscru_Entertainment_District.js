@@ -4,6 +4,7 @@ var mapName = 'Uscru_Entertainment_District';
 var uscru_entertainment_district_map = {
 	name: mapName,
 	title: 'Uscru Entertainment District',
+	source: 'Ahsoka Tano, Rebel Instigator Ally Pack',
 	width: 15,
 	height: 22,
 	walls: [

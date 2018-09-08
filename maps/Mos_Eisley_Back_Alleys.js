@@ -4,6 +4,7 @@ var mapName = 'Mos_Eisley_Back_Alleys';
 var mos_eisley_back_alleys_map = {
 	name: mapName,
 	title: 'Mos Eisley Back Alleys',
+	source: 'Jawa Scavenger Villain Pack',
 	width: 16,
 	height: 19,
 	walls: [

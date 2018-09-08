@@ -15,6 +15,9 @@ var canvas_height = 0;//height * boxWidth + padding * 2;
 var canvas = {};
 var context = {};
 var image = new Image();
+var attacker_image = new Image();
+var defender_image = new Image();
+var blocker_image = new Image();
 var rotate = 0 * Math.PI / 180.0;
 var attackingTile = { x: -1, y: -1};
 var defendingTile = { x: -1, y: -1};
@@ -320,29 +323,65 @@ function drawIntersection(intersection) {
 
 function drawAttacker() {
 	if (attackingTile.x != -1 && attackingTile.y != -1) {
-		context.fillStyle = 'rgba(200, 0, 0, 0.5)';
-		var x = attackingTile.x * boxWidth + padding;
-		var y = attackingTile.y * boxWidth + padding
-		context.fillRect(x, y, boxWidth, boxWidth);
+		context.beginPath();
+		context.strokeStyle = "black";
+		var x = (attackingTile.x * boxWidth) + padding + (0.5 * boxWidth);
+		var y = (attackingTile.y * boxWidth) + padding + (0.5 * boxWidth);
+		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
+		context.fillStyle = 'white';
+		context.fill();
+		context.stroke();
+		drawAttackerIcon();
 	}
 }
 
 function drawDefender() {
 	if (defendingTile.x != -1 && defendingTile.y != -1) {
-		context.fillStyle = 'rgba(0, 0, 300, 0.5)';
-		var x = defendingTile.x * boxWidth + padding;
-		var y = defendingTile.y * boxWidth + padding
-		context.fillRect(x, y, boxWidth, boxWidth);
+		context.beginPath();
+		context.strokeStyle = "black";
+		var x = (defendingTile.x * boxWidth) + padding + (0.5 * boxWidth);
+		var y = (defendingTile.y * boxWidth) + padding + (0.5 * boxWidth);
+		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
+		context.fillStyle = 'white';
+		context.fill();
+		context.stroke();
+		drawDefenderIcon();
 	}
 }
 
 function drawBlocker(blocker) {
 	if (blocker.x != -1 && blocker.y != -1) {
-		context.fillStyle = 'rgba(128, 128, 128, 0.5)';
-		var x = blocker.x * boxWidth + padding;
-		var y = blocker.y * boxWidth + padding
-		context.fillRect(x, y, boxWidth, boxWidth);
+		context.beginPath();
+		context.strokeStyle = "black";
+		var x = (blocker.x * boxWidth) + padding + (0.5 * boxWidth);
+		var y = (blocker.y * boxWidth) + padding + (0.5 * boxWidth);
+		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
+		context.fillStyle = 'white';
+		context.fill();
+		context.stroke();
+		drawBlockerIcon(blocker.x, blocker.y);
 	}
+}
+
+function drawAttackerIcon () {
+	context.drawImage(attacker_image, 0, 0, attacker_image.width, attacker_image.height, 
+		(attackingTile.x * boxWidth) + padding + (0.1 * boxWidth),
+		(attackingTile.y * boxWidth) + padding + (0.15 * boxWidth), 
+		(0.7 * boxWidth), (0.7 * boxWidth));
+}
+
+function drawDefenderIcon() {
+	context.drawImage(defender_image, 0, 0, defender_image.width, defender_image.height, 
+		(defendingTile.x * boxWidth) + padding,
+		(defendingTile.y * boxWidth) + padding, 
+		boxWidth, boxWidth);
+}
+
+function drawBlockerIcon (x, y) {
+	context.drawImage(blocker_image, 0, 0, blocker_image.width, blocker_image.height, 
+		(x * boxWidth) + padding + (0.15 * boxWidth),
+		(y * boxWidth) + padding + (0.2 * boxWidth), 
+		(0.7 * boxWidth), (0.7 * boxWidth));
 }
 
 function updateLinesOfSight(losPaths) {
@@ -1565,6 +1604,11 @@ $(function () {
 	canvas = document.getElementById('canvas');
 	if (!canvas.getContext) { return; }
 	context = canvas.getContext("2d");
+	
+	attacker_image.src = './images/attacker.png';
+	defender_image.src = './images/defender.png';
+	blocker_image.src = './images/blocker.png';
+
 	map_name = $('#selected_map option:selected').val();
 	if (ia_los_maps[map_name]) {
 		loadMap(map_name);

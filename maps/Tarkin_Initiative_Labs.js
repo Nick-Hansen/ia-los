@@ -4,6 +4,7 @@ var mapName = 'Tarkin_Initiative_Labs';
 var tarkin_initiative_labs_map = {
 	name: mapName,
 	title: 'Tarkin Initiative Labs',
+	source: 'BT-1 and 0-0-0 Villain Pack',
 	width: 17,
 	height: 18,
 	walls: [

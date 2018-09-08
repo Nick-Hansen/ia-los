@@ -10,15 +10,15 @@
     <input id="map_load" type="hidden" />
     <div class="row">
       <div class="column">
-        <div>
+        <div style="margin-top: 10px; margin-bottom: 5px;">
           <label>Selected Map: </label>
           <select id="selected_map">
             <option value="Mos_Eisley_Back_Alleys" selected="true">Mos Eisley Back Alleys</option>
             <option value="Tarkin_Initiative_Labs">Tarkin Initiative Labs</option>
-            <option value="Uscru_Entertainment_District">Uscru_Entertainment_District</option>
+            <option value="Uscru_Entertainment_District">Uscru Entertainment District</option>
           </select>
         </div>
-        <div>
+        <div style="margin-top: 5px; margin-bottom: 10px;">
           <label>
             <input type="radio" name="gridDisplay" value="map" checked="checked">
             <span>Map</span>
@@ -40,20 +40,14 @@
       </div>
       <div class="column">
         <div>
-          <label>
-            <input type="radio" name="target" value="attacker" checked="checked">
-            <span>Attacker</span>
-          </label>
-          <label>
-            <input type="radio" name="target" value="defender">
-            <span>Defender</span>
-          </label>
-          <label>
-            <input type="radio" name="target" value="blocker">
-            <span>Blocker</span>
-          </label>
+          <input type="radio" name="target" value="attacker" checked="checked" id="attacker" class="image-radio">
+          <label for="attacker"><img src="images/attacker.png"></label>
+          <input type="radio" name="target" value="defender" id="defender" class="image-radio">
+          <label for="defender"><img src="images/defender.png"></label>
+          <input type="radio" name="target" value="blocker" id="blocker" class="image-radio">
+          <label for="blocker"><img src="images/blocker.png"></label>
         </div>
-        <div>
+        <div style="margin-top: 5px;">
           <label>Attacker Line of Sight: </label>
           <select id="linesOfSight">
             <option selected="true" value="none">None</option>
