@@ -1624,7 +1624,7 @@ $(function () {
 	}
 })
 
-$(document).on('mouseup', '#canvas', function (event) {
+$(document).on('click', '#canvas', function (event) {
 	if (!canvas.getContext) { return; }
 	var target = $('input[name=target]:checked' ).val();
 	var boardUpdated = selectTile(event.clientX, event.clientY, target);
