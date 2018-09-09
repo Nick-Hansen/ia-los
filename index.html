@@ -39,15 +39,15 @@
         </canvas>
       </div>
       <div class="column">
-        <div>
+        <div style="margin-bottom: 5px;">
           <input type="radio" name="target" value="attacker" checked="checked" id="attacker" class="image-radio">
-          <label for="attacker" title="Attacker"><img src="images/attacker.png"></label>
+          <label for="attacker"><img src="images/attacker.png"></label>
           <input type="radio" name="target" value="defender" id="defender" class="image-radio">
-          <label for="defender" title="Defender"><img src="images/defender.png"></label>
+          <label for="defender"><img src="images/defender.png"></label>
           <input type="radio" name="target" value="blocker" id="blocker" class="image-radio">
-          <label for="blocker" title="Blocker"><img src="images/blocker.png"></label>
+          <label for="blocker"><img src="images/blocker.png"></label>
         </div>
-        <div style="margin-top: 5px;">
+        <div style="margin-top: 5px; margin-bottom: 5px;">
           <label>Attacker Line of Sight: </label>
           <select id="linesOfSight">
             <option selected="true" value="none">None</option>
@@ -70,6 +70,22 @@
           </select>
         </div>
       </div>
+    </div>
+    <div class="row">
+      <div style="margin-top: 5px;">
+          <ul>
+            <li>The app will calculate all possible lines of sight between the attacker and defender and display the first available.</li>
+            <li>If more than one line of sight is possible, you can select from the Attacker Lines of Sight dropdown to select another to display.</li>
+            <li>Updating the map will recalculate lines of sight.</li>
+          </ul>
+          <span>Instructions:</span>
+          <ul>
+            <li>Place an attacker on the map by selecting <span class="instructions-attacker"><img src="images/attacker.png"></span> above and clicking a tile on the map.</li>
+            <li>Place a defender on the map by selecting <span class="instructions-defender"><img src="images/defender.png"></span> above and clicking a tile on the map.</li>
+            <li>Place blocking models on the map by selecting <span class="instructions-blocker"><img src="images/blocker.png"></span> above and clicking a tile on the map.</li>
+            <li>Remove blocking models from the map by selecting <span class="instructions-blocker"><img src="images/blocker.png"></span> above and clicking the blocking model on the map.</li>
+          </ul>
+        </div>
     </div>
   </body>
 </html>

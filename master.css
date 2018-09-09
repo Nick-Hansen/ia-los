@@ -44,7 +44,7 @@ label[for="attacker"], label[for="defender"],label[for="blocker"] {
 input[type="radio"]:checked+label[for="attacker"], 
 input[type="radio"]:checked+label[for="defender"],
 input[type="radio"]:checked+label[for="blocker"] {
-	box-shadow: 0 0 5px 5px grey;
+	box-shadow: 0 0 5px 5px blue;
 }
 
 label[for="attacker"] img, 
@@ -54,12 +54,23 @@ label[for="blocker"] img {
 	width:36px;
 	padding-top: 3px;
 	padding-left: 3px;
-}	
-
-label[for="defender"] {
-
 }
 
-label[for="blocker"] {
+.instructions-attacker, .instructions-defender, .instructions-blocker {
+	display: inline-block;
+	background-color: white;
+	border: 2px solid black;
+	border-radius: 4px;
+	width: 24px;
+	height: 24px;
+	margin: 4px;
+}
 
+.instructions-attacker img, 
+.instructions-defender img, 
+.instructions-blocker img {
+	height:20px;
+	width:20px;
+	padding-top: 2px;
+	padding-left: 2px;
 }
