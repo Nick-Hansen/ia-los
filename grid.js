@@ -33,6 +33,11 @@ var blockingTiles = [];
 var blockingEdges = [];
 var blockingIntersections = [];
 
+var map_images = ['Mos_Eisley_Back_Alleys',
+'Tarkin_Initiative_Labs',
+'Uscru_Entertainment_District'];
+var map_image_available = false;
+
 function loadMap(mapName) {
 	attackingTile = { x: -1, y: -1};
 	defendingTile = { x: -1, y: -1};
@@ -60,6 +65,16 @@ function loadMap(mapName) {
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
+
+	map_image_available = map_images.indexOf(mapName) > -1;
+	if (map_image_available == true) {
+		$('input[name="gridDisplay"][value="map"]').attr('disabled', false);
+		$('input[name="gridDisplay"][value="both"]').attr('disabled', false);
+	} else {
+		$('input[name="gridDisplay"][value="grid"]').prop("checked", true);
+		$('input[name="gridDisplay"][value="map"]').attr('disabled', true);
+		$('input[name="gridDisplay"][value="both"]').attr('disabled', true);
+	}
 
 	drawBoard();
 }
@@ -1610,6 +1625,7 @@ function horizontallyAdjacentTilesBlocked(tile) {
 $(function () {
 	canvas = document.getElementById('canvas');
 	if (!canvas.getContext) { return; }
+	canvas.addEventListener('click', boardClick, false);
 	context = canvas.getContext("2d");
 	
 	attacker_image.src = './images/attacker.png';
@@ -1624,7 +1640,7 @@ $(function () {
 	}
 })
 
-$(document).on('click', '#canvas', function (event) {
+function boardClick(event) {
 	if (!canvas.getContext) { return; }
 	var target = $('input[name=target]:checked' ).val();
 	var boardUpdated = selectTile(event.clientX, event.clientY, target);
@@ -1634,7 +1650,8 @@ $(document).on('click', '#canvas', function (event) {
 			drawLinesOfSight();
 		});
 	}
-})
+}
+
 
 $(document).on('change', 'input[type=radio][name=gridDisplay]', function() {
 	drawBoard(function () {
