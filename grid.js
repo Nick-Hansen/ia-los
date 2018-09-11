@@ -524,23 +524,6 @@ function calculateLoS() {
 	var br_to_tr = getLosFromCornerToCorner(attacker_br, defender_tr);
 	var br_to_br = getLosFromCornerToCorner(attacker_br, defender_br);
 	var br_to_bl = getLosFromCornerToCorner(attacker_br, defender_bl);
-
-	console.log('tl_to_tl_tr: ' + (tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps));
-	console.log('tl_to_tr_br: ' + (tl_to_tr && tl_to_br && !tl_to_tr_br_overlaps));
-	console.log('tl_to_bl_br: ' + (tl_to_bl && tl_to_br && !tl_to_bl_br_overlaps));
-	console.log('tl_to_tl_bl: ' + (tl_to_tl && tl_to_bl && !tl_to_tl_bl_overlaps));
-	console.log('tr_to_tl_tr: ' + (tr_to_tl && tr_to_tr && !tr_to_tl_tr_overlaps));
-	console.log('tr_to_tr_br: ' + (tr_to_tr && tr_to_br && !tr_to_tr_br_overlaps));
-	console.log('tr_to_bl_br: ' + (tr_to_bl && tr_to_br && !tr_to_bl_br_overlaps));
-	console.log('tr_to_tl_bl: ' + (tr_to_tl && tr_to_bl && !tr_to_tl_bl_overlaps));
-	console.log('bl_to_tl_tr: ' + (bl_to_tl && bl_to_tr && !bl_to_tl_tr_overlaps));
-	console.log('bl_to_tr_br: ' + (bl_to_tr && bl_to_br && !bl_to_tr_br_overlaps));
-	console.log('bl_to_bl_br: ' + (bl_to_bl && bl_to_br && !bl_to_bl_br_overlaps));
-	console.log('bl_to_tl_bl: ' + (bl_to_tl && bl_to_bl && !bl_to_tl_bl_overlaps));
-	console.log('br_to_tl_tr: ' + (br_to_tl && br_to_tr && !br_to_tl_tr_overlaps));
-	console.log('br_to_tr_br: ' + (br_to_tr && br_to_br && !br_to_tr_br_overlaps));
-	console.log('br_to_bl_br: ' + (br_to_bl && br_to_br && !br_to_bl_br_overlaps));
-	console.log('br_to_tl_bl: ' + (br_to_tl && br_to_bl && !br_to_tl_bl_overlaps));
 	
 	updateLinesOfSight([
 		{ key: 'tl_to_tl_tr', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: (tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps) },
