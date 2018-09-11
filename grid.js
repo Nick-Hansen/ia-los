@@ -129,7 +129,6 @@ function drawBoard(callback){
 
 function rotate_counter_clockwise() {
 	rotate -= 90 * Math.PI / 180.0;
-
 	//drawBoard(function () {
 	//	calculateLoS();
 	//	drawLinesOfSight();
@@ -138,7 +137,6 @@ function rotate_counter_clockwise() {
 
 function rotate_clockwise() {
 	rotate += 90 * Math.PI / 180.0;
-
 	//drawBoard(function () {
 	//	calculateLoS();
 	//	drawLinesOfSight();
