@@ -81,14 +81,15 @@ function loadMap(mapName) {
 }
 
 function getMapJSON(mapName, callback) {
-	try {
-		console.log('map name: ' + mapName);
-		$.getJSON('maps/' + mapName + '.json', function( data ) {
-			console.log('response: ' + JSON.stringify(data));
-		});
-	} catch (e) {
-		console.log(e.message);
-	}
+	console.log('map name: ' + mapName);
+	$.getJSON('maps/' + mapName + '.json')
+	.done(function( data ) {
+		console.log( "JSON Data: " + JSON.stringify(data) );
+	})
+	.fail(function( jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+		console.log( "Request Failed: " + err );
+	});
 }
 
 function getMap(mapName) {
