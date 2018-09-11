@@ -461,9 +461,9 @@ function updateLinesOfSightDropdown(options) {
 	});
 
 	if (firstVisibleOption == undefined) {
-		$('#linesOfSight').val('none');//.trigger('change');
+		$('#linesOfSight').val('none');
 	} else {
-		$('#linesOfSight').val(firstVisibleOption.value);//.trigger('change');
+		$('#linesOfSight').val(firstVisibleOption.value);
 	}
 }
 
