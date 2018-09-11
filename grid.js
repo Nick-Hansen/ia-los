@@ -16,7 +16,8 @@ var canvas_height = 0;
 
 var canvas = {};
 var context = {};
-var image = new Image();
+var map_image = new Image();
+var map_image_name = undefined;
 var attacker_image = new Image();
 var defender_image = new Image();
 var blocker_image = new Image();
@@ -157,8 +158,7 @@ function rotate_clockwise() {
 //}
 
 function drawMap(callback) {
-	image = new Image();
-	image.onload = function() {
+	if (map_image_name == map_name) {
 		//context.save();
 		//context.translate(canvas.width/2,canvas.height/2);
 		//context.rotate(90 * Math.PI / 180);
@@ -166,10 +166,18 @@ function drawMap(callback) {
 		//context.drawImage(image,-image.width/2,-image.width/2, image.width, image.height);
 		//context.drawImage(image,0, 0, image.height, image.width, -image.width/2,-image.width/2, grid_height, grid_width);
 		//context.restore();
-		context.drawImage(image, 0, 0, image.width, image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+		context.drawImage(map_image, 0, 0, map_image.width, map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
 		if (callback) { callback(); }
-	};
-	image.src = './images/' + map_name + '.jpg';
+	} else {
+		map_image_name = undefined;
+		map_image = new Image();
+		map_image.onload = function() {
+			map_image_name = map_name;
+			context.drawImage(map_image, 0, 0, map_image.width, map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+			if (callback) { callback(); }
+		};
+		map_image.src = './images/' + map_name + '.jpg';
+	}
 }
 
 function drawGrid(){
