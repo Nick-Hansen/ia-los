@@ -95,15 +95,6 @@ function getMap(mapName) {
 	var tag = document.createElement("script");
 	tag.src = './maps/' + mapName + '.js';
 	document.getElementsByTagName("head")[0].appendChild(tag);
-	//var xobj = new XMLHttpRequest();
-	//xobj.overrideMimeType('application/json');
-	//xobj.open('get', './maps/' + mapName + '.js', true);
-	//xobj.onreadystatechange = function () {
-	//	if (xobj.readyState == 4 && xobj.status == '200') {
-	//		callback(xobj.responseText);
-	//	}
-	//};
-	//xobj.send(null);
 }
 
 function drawBoard(callback){
