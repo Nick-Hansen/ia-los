@@ -80,6 +80,28 @@ function loadMap(mapName) {
 	drawBoard();
 }
 
+function getMapJSON(mapName, callback) {
+	try {
+		console.log('map name: ' + mapName);
+		//var xobj = new XMLHttpRequest();
+		//xobj.overrideMimeType("application/json");
+		//xobj.open('GET', mapName + '.json', true);
+		//xobj.onreadystatechange = function () {
+		//	if (xobj.readyState == 4 && xobj.status == "200") {
+		//		// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+		//		//callback(xobj.responseText);
+		//		console.log('response: ' + xobj.responseText)
+		//	}
+		//};
+		//xobj.send(null);
+		$.getJSON('maps/' + mapName + '.json', function( data ) {
+			console.log('response: ' + data)
+		});
+	} catch (e) {
+		console.log(e.message);
+	}
+}
+
 function getMap(mapName) {
 	var tag = document.createElement("script");
 	tag.src = './maps/' + mapName + '.js';
@@ -1645,6 +1667,7 @@ $(function () {
 		loadMap(map_name);
 	} else {
 		getMap(map_name);
+		getMapJSON(map_name);
 	}
 })
 
@@ -1680,6 +1703,7 @@ $(document).on('change', '#selected_map', function() {
 		loadMap(map_name);
 	} else {
 		getMap(map_name);
+		getMapJSON(map_name);
 	}
 });
 
