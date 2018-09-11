@@ -80,22 +80,16 @@ function loadMap(mapName) {
 	drawBoard();
 }
 
-function getMapJSON(mapName, callback) {
-	console.log('map name: ' + mapName);
+function getMap(mapName) {
 	$.getJSON('maps/' + mapName + '.json')
 	.done(function( data ) {
-		console.log( "JSON Data: " + JSON.stringify(data) );
+		ia_los_maps[mapName] = data;
+		loadMap(mapName);
 	})
 	.fail(function( jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;
 		console.log( "Request Failed: " + err );
 	});
-}
-
-function getMap(mapName) {
-	var tag = document.createElement("script");
-	tag.src = './maps/' + mapName + '.js';
-	document.getElementsByTagName("head")[0].appendChild(tag);
 }
 
 function drawBoard(callback){
@@ -1629,7 +1623,6 @@ $(function () {
 		loadMap(map_name);
 	} else {
 		getMap(map_name);
-		getMapJSON(map_name);
 	}
 })
 
@@ -1665,7 +1658,6 @@ $(document).on('change', '#selected_map', function() {
 		loadMap(map_name);
 	} else {
 		getMap(map_name);
-		getMapJSON(map_name);
 	}
 });
 
