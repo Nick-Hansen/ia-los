@@ -81,8 +81,8 @@ function loadMap(mapName) {
 }
 
 function getMap(mapName) {
-	$.getJSON('maps/' + mapName + '.json');
-	//$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json');
+	$.getJSON('maps/' + mapName + '.json')
+	//$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
 	.done(function( data ) {
 		ia_los_maps[mapName] = data;
 		loadMap(mapName);
