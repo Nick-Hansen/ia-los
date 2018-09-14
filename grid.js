@@ -81,7 +81,7 @@ function loadMap(mapName) {
 }
 
 function getMap(mapName) {
-	$.getJSON('maps/' + mapName + '.json')
+	$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
 	.done(function( data ) {
 		ia_los_maps[mapName] = data;
 		loadMap(mapName);
@@ -1188,7 +1188,7 @@ function intersectionBlocksPath(blockingIntersection, startX, startY, endX, endY
 			//attack from top left
 			if (deltaX > 0 && deltaY > 0) {
 				pathBlocked = (leftConnection && topConnection) ||
-					(leftConnection && rightConnection) ||
+					(leftConnection && bottomConnection) ||
 					(leftConnection && rightConnection);
 			}
 			//attack from top right
