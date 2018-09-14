@@ -5,23 +5,14 @@
 	"width": 12,
 	"height": 8,
 	"walls": [
-		//[ { "x": 10, "y": 3 }, { "x": 10, "y": 4 } ]
 	],
 	"blockingTiles": [
-		//{ "x": 8, "y": 21 }
 	],
 	"blockingEdges": [
-		//[ { "x": 8, "y": 15 }, { "x": 8, "y": 16 } ]
 	],
 	"blockingIntersections": [
-		//{ "x": 10, "y": 4, "connections": [
-		//	{ "x": 10, "y": 3 },
-		//	{ "x": 9, "y": 4 },
-		//	{ "x": 10, "y": 5 }
-		//]}
 	],
 	"offMapTiles": [
-		//{ "x": 0, "y": 0 }
 		{ "x": 4, "y": 0 },
 		{ "x": 5, "y": 0 },
 		{ "x": 6, "y": 0 },
