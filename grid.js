@@ -1188,7 +1188,7 @@ function intersectionBlocksPath(blockingIntersection, startX, startY, endX, endY
 			//attack from top left
 			if (deltaX > 0 && deltaY > 0) {
 				pathBlocked = (leftConnection && topConnection) ||
-					(leftConnection && rightConnection) ||
+					(leftConnection && bottomConnection) ||
 					(leftConnection && rightConnection);
 			}
 			//attack from top right
