@@ -190,11 +190,11 @@ function drawGrid(){
 	context.stroke();
 
 	offMapTiles.forEach(drawOffMapTile);
-	//walls.forEach(drawWall);
+	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
-	//blockingEdges.forEach(drawBlockingEdge);
+	blockingEdges.forEach(drawBlockingEdge);
 	//blockingIntersections.forEach(drawBlockingIntersection);
-	blockingIntersections.forEach(drawVerboseBlockingIntersection);
+	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 }
 
 function getTile(clientX, clientY, event) {
