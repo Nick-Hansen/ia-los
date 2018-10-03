@@ -13,6 +13,7 @@
         <div style="margin-top: 10px; margin-bottom: 5px;">
           <label>Selected Map: </label>
           <select id="selected_map">
+            <option value="custom">Custom</option>
             <option value="Mos_Eisley_Back_Alleys" selected="true">Mos Eisley Back Alleys</option>
             <option value="Tarkin_Initiative_Labs">Tarkin Initiative Labs</option>
             <option value="Uscru_Entertainment_District">Uscru Entertainment District</option>
@@ -39,7 +40,7 @@
         </canvas>
       </div>
       <div class="column">
-        <div style="margin-bottom: 5px;">
+        <div style="margin-bottom: 5px;" data-target-tools="icons">
           <input type="radio" name="target" value="attacker" checked="checked" id="attacker" class="image-radio">
           <label for="attacker"><img src="images/attacker.png"></label>
           <input type="radio" name="target" value="defender" id="defender" class="image-radio">
@@ -47,7 +48,7 @@
           <input type="radio" name="target" value="blocker" id="blocker" class="image-radio">
           <label for="blocker"><img src="images/blocker.png"></label>
         </div>
-        <div style="margin-top: 5px; margin-bottom: 5px;">
+        <div style="margin-top: 5px; margin-bottom: 5px;" data-target-tools="lineOfSight">
           <label>Attacker Line of Sight: </label>
           <select id="linesOfSight">
             <option selected="true" value="none">None</option>
@@ -68,6 +69,88 @@
             <option disabled="disabled" value="br_to_bl_br">Bottom Right to Bottom</option>
             <option disabled="disabled" value="br_to_tl_bl">Bottom Right to Left</option>
           </select>
+        </div>
+        <div style="margin-bottom: 5px;" data-map-edit-tools="add_map_image">
+          <label>Map Image url</label>
+          <input type="text" id="map_image_url" />
+          <button type="button" data-map-edit-add-map-image>Add Map Image</button>
+        </div>
+        <div style="margin-bottom: 5px;" data-map-edit-tools="map-data" style="display: none">
+          <div>
+            <label>Map Name</label>
+            <input type="text" id="map_name" />
+          </div>
+          <div>
+            <label>Map Source</label>
+            <input type="text" id="map_source" />
+          </div>
+        </div> 
+        <div style="margin-bottom: 5px;" data-map-edit-tools="icons" style="display: none">
+          <input type="radio" name="target" value="off_map_tile" id="off_map_tile" class="image-radio">
+          <label for="off_map_tile"><span></span></label>
+          <input type="radio" name="target" value="wall_vertical" id="wall_vertical" class="image-radio">
+          <label for="wall_vertical"><span></span></label>
+          <input type="radio" name="target" value="wall_horizontal" id="wall_horizontal" class="image-radio">
+          <label for="wall_horizontal"><span></span></label>
+          <input type="radio" name="target" value="blocking_tile" id="blocking_tile" class="image-radio">
+          <label for="blocking_tile"><span></span></label>
+          <input type="radio" name="target" value="blocking_edge_vertical" id="blocking_edge_vertical" class="image-radio">
+          <label for="blocking_edge_vertical"><span class="blocking_edge_vertical"></span></label>
+          <input type="radio" name="target" value="blocking_edge_horizontal" id="blocking_edge_horizontal" class="image-radio">
+          <label for="blocking_edge_horizontal"><span class="blocking_edge_horizontal"></span></label>
+          <input type="radio" name="target" value="blocking_intersection" id="blocking_intersection" class="image-radio">
+          <label for="blocking_intersection"><span class="blocking_intersection"></span></label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;" data-map-edit-tools="dimensions" style="display: none">
+          <label for="map_width">Width</label>
+          <select id="map_width" data-custom-dimensions="width">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option selected="true" value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+          </select>
+          <label for="map_height">Height</label>
+          <select id="map_height" data-custom-dimensions="height">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option selected="true" value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;" data-map-edit-tools="output_map" style="display: none">
+          <button type="button" data-map-edit-output-map>Output Map</button>
         </div>
       </div>
     </div>

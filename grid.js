@@ -17,6 +17,7 @@ var canvas_height = 0;
 var canvas = {};
 var context = {};
 var map_image = new Image();
+var custom_map_image = new Image();
 var map_image_name = undefined;
 var attacker_image = new Image();
 var defender_image = new Image();
@@ -38,6 +39,64 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Tarkin_Initiative_Labs',
 'Uscru_Entertainment_District'];
 var map_image_available = false;
+var custom_map_image_url = '';
+
+function showMapEditIcons() {
+	$('[data-target-tools]').hide();
+	$('input[name="target"][value="off_map_tile"]').prop("checked", true);
+	$('[data-map-edit-tools]').show();
+}
+
+function showTargetIcons() {
+	$('[data-map-edit-tools]').hide();
+	$('input[name="target"][value="attacker"]').prop("checked", true);
+	$('[data-target-tools]').show();
+}
+
+function setCustomMapImage(map_image_url) {
+	custom_map_image = new Image();
+	custom_map_image.onload = function() {
+		custom_map_image_url = map_image_url;
+		context.drawImage(custom_map_image, 0, 0, custom_map_image.width, custom_map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+		//if (callback) { callback(); }
+	};
+	custom_map_image.src = map_image_url;
+}
+
+function loadCustomMap() {
+	attackingTile = { x: -1, y: -1};
+	defendingTile = { x: -1, y: -1};
+	blockers = [];
+	linesOfSight = {};
+
+	//map_name = $('#selected_map option:selected').val();
+	map_width = parseInt($('#map_width option:selected').val());
+	map_height = parseInt($('#map_height option:selected').val());
+	grid_width = map_width * boxWidth;
+	grid_height = map_height * boxWidth;
+	var max_width_height = map_width > map_height ? map_width : map_height;
+	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvas_width = max_width_height * boxWidth;
+	canvas_height = max_width_height * boxWidth;
+
+	offMapTiles = [];
+	walls = [];
+	blockingTiles = [];
+	blockingEdges = [];
+	blockingIntersections = [];
+
+	canvas.width = canvas_width;
+	canvas.height = canvas_height;
+	canvas.style.width = canvas_width + 'px';
+	canvas.style.height = canvas_height + 'px';
+
+	$('input[name="gridDisplay"][value="grid"]').prop("checked", true);
+	$('input[name="gridDisplay"][value="map"]').attr('disabled', true);
+	$('input[name="gridDisplay"][value="both"]').attr('disabled', true);
+	
+	drawBoard();
+}
 
 function loadMap(mapName) {
 	attackingTile = { x: -1, y: -1};
@@ -66,6 +125,8 @@ function loadMap(mapName) {
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
+	canvas.style.width = canvas_width + 'px';
+	canvas.style.height = canvas_height + 'px';
 
 	map_image_available = map_images.indexOf(mapName) > -1;
 	if (map_image_available == true) {
@@ -81,8 +142,8 @@ function loadMap(mapName) {
 }
 
 function getMap(mapName) {
-	$.getJSON('maps/' + mapName + '.json')
-	//$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
+	//$.getJSON('maps/' + mapName + '.json')
+	$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
 	.done(function( data ) {
 		ia_los_maps[mapName] = data;
 		loadMap(mapName);
@@ -95,22 +156,33 @@ function getMap(mapName) {
 
 function drawBoard(callback){
 	var gridDisplay = $('input[name=gridDisplay]:checked' ).val();
-	context.fillStyle = "black";
+	if (map_name == 'custom') {
+		context.fillStyle = "white";
+	} else {
+		context.fillStyle = "black";
+	}
 	context.fillRect(0, 0, canvas_width, canvas_height);
 	context.clearRect(horizontal_padding, vertical_padding, grid_width, grid_height);
-	if (gridDisplay == 'grid') {
-		drawGrid();
-		drawAttacker();
-		drawDefender();
-		blockers.forEach(drawBlocker);
-		if (callback) { callback(); }
-	} else if (gridDisplay == 'map') {
+	var drawCustomMap = map_name == 'custom' && custom_map_image_url.length > 0;
+	if (drawCustomMap) {
+		drawMap(function () {
+			drawGrid();
+			if (callback) { callback(); }
+		})
+	}
+	if (gridDisplay == 'map') {
 		drawMap(function () {
 			drawAttacker();
 			drawDefender();
 			blockers.forEach(drawBlocker);
 			if (callback) { callback(); }
 		})
+	} else if (gridDisplay == 'grid') {
+		drawGrid();
+		drawAttacker();
+		drawDefender();
+		blockers.forEach(drawBlocker);
+		if (callback) { callback(); }
 	} else if (gridDisplay == 'both') {
 		drawMap(function () {
 			drawGrid();
@@ -154,7 +226,16 @@ function rotate_clockwise() {
 //}
 
 function drawMap(callback) {
-	if (map_image_name == map_name) {
+	if (map_name == 'custom') {
+		if (custom_map_image_url.length > 0) {
+			context.drawImage(custom_map_image, 0, 0, custom_map_image.width, custom_map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+			if (callback) { callback(); }
+		}
+		else {
+			if (callback) { callback(); }
+		}
+	}
+	else if (map_image_name == map_name) {
 		//context.save();
 		//context.translate(canvas.width/2,canvas.height/2);
 		//context.rotate(90 * Math.PI / 180);
@@ -194,7 +275,7 @@ function drawGrid(){
 	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
 	blockingEdges.forEach(drawBlockingEdge);
-	//blockingIntersections.forEach(drawBlockingIntersection);
+	blockingIntersections.forEach(drawBlockingIntersection);
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 }
 
@@ -203,6 +284,184 @@ function getTile(clientX, clientY, event) {
 	x = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
 	y = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
 	return { x : x, y: y };
+}
+
+function editMap(clientX, clientY, target) {
+	var rect = canvas.getBoundingClientRect();
+	var xCoord = clientX - rect.left;
+	var yCoord = clientY - rect.top;
+	//check for click in padding
+	if (xCoord < horizontal_padding || xCoord > (horizontal_padding + grid_width) ||
+		yCoord < vertical_padding || yCoord > (vertical_padding + grid_height)) {
+		return false;
+	}
+	
+	//set selected tile
+	if (target == 'off_map_tile') {
+		//convert to coordinates
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var offMapTileIndex = offMapTiles.findIndex(function(tile) {
+			return tile.x == xCoord && tile.y == yCoord;
+		});
+		if (offMapTileIndex == -1) {
+			offMapTiles.push({ x: xCoord, y: yCoord });
+		} else {
+			offMapTiles.splice(offMapTileIndex, 1);
+		}	
+	} else if (target == 'blocking_tile') {
+		//convert to coordinates
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var blockingTileIndex = blockingTiles.findIndex(function(tile) {
+			return tile.x == xCoord && tile.y == yCoord;
+		});
+		if (blockingTileIndex == -1) {
+			blockingTiles.push({ x: xCoord, y: yCoord });
+		} else {
+			blockingTiles.splice(blockingTileIndex, 1);
+		}
+	} 
+	else if (target == 'wall_vertical') {
+		//convert to coordinates
+		var leftWallPosition = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var rightWallPosition = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var leftWallDistance = (xCoord - horizontal_padding) - leftWallPosition;
+		var rightWallDistance = rightWallPosition - (xCoord - horizontal_padding);
+		if (leftWallDistance < rightWallDistance) {
+			xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		} else {
+			xCoord = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth);
+		}
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var wallIndex = walls.findIndex(function(wall) {
+			return wall[0].x == xCoord && wall[1].x == xCoord &&
+				wall[0].y == yCoord && wall[1].y == yCoord + 1;
+		});
+		if (wallIndex == -1) {
+			walls.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
+		} else {
+			walls.splice(wallIndex, 1);
+		}
+	} else if (target == 'blocking_edge_vertical') {
+		//convert to coordinates
+		var leftblockingEdgePosition = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var rightblockingEdgePosition = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var leftblockingEdgeDistance = (xCoord - horizontal_padding) - leftblockingEdgePosition;
+		var rightblockingEdgeDistance = rightblockingEdgePosition - (xCoord - horizontal_padding);
+		if (leftblockingEdgeDistance < rightblockingEdgeDistance) {
+			xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		} else {
+			xCoord = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth);
+		}
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var blockingEdgeIndex = blockingEdges.findIndex(function(blockingEdge) {
+			return blockingEdge[0].x == xCoord && blockingEdge[1].x == xCoord &&
+				blockingEdge[0].y == yCoord && blockingEdge[1].y == yCoord + 1;
+		});
+		if (blockingEdgeIndex == -1) {
+			blockingEdges.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
+		} else {
+			blockingEdges.splice(blockingEdgeIndex, 1);
+		}
+	} else if (target == 'wall_horizontal') {
+		//convert to coordinates
+		var topWallPosition = Math.floor((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var bottomWallPosition = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var topWallDistance = (yCoord - vertical_padding) - topWallPosition;
+		var bottomWallDistance = bottomWallPosition - (yCoord - vertical_padding);
+		if (topWallDistance < bottomWallDistance) {
+			yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+		} else {
+			yCoord = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth);
+		}
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+
+		var wallIndex = walls.findIndex(function(wall) {
+			return wall[0].x == xCoord && wall[1].x == xCoord + 1 &&
+				wall[0].y == yCoord && wall[1].y == yCoord;
+		});
+		if (wallIndex == -1) {
+			walls.push([{ x: xCoord, y: yCoord }, { x: xCoord + 1, y: yCoord }]);
+		} else {
+			walls.splice(wallIndex, 1);
+		}
+	} else if (target == 'blocking_edge_horizontal') {
+		//convert to coordinates
+		var topblockingEdgePosition = Math.floor((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var bottomblockingEdgePosition = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var topblockingEdgeDistance = (yCoord - vertical_padding) - topblockingEdgePosition;
+		var bottomblockingEdgeDistance = bottomblockingEdgePosition - (yCoord - vertical_padding);
+		if (topblockingEdgeDistance < bottomblockingEdgeDistance) {
+			yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+		} else {
+			yCoord = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth);
+		}
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+
+		var blockingEdgeIndex = blockingEdges.findIndex(function(blockingEdge) {
+			return blockingEdge[0].x == xCoord && blockingEdge[1].x == xCoord + 1 &&
+				blockingEdge[0].y == yCoord && blockingEdge[1].y == yCoord;
+		});
+		if (blockingEdgeIndex == -1) {
+			blockingEdges.push([{ x: xCoord, y: yCoord }, { x: xCoord + 1, y: yCoord }]);
+		} else {
+			blockingEdges.splice(blockingEdgeIndex, 1);
+		}
+	} 
+	else if (target == 'blocking_intersection') { 
+		//convert to coordinates
+		var leftblockingIntersectionPosition = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var rightblockingIntersectionPosition = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var leftblockingIntersectionDistance = (xCoord - horizontal_padding) - leftblockingIntersectionPosition;
+		var rightblockingIntersectionDistance = rightblockingIntersectionPosition - (xCoord - horizontal_padding);
+		if (leftblockingIntersectionDistance < rightblockingIntersectionDistance) {
+			xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		} else {
+			xCoord = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth);
+		}
+		var topblockingIntersectionPosition = Math.floor((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var bottomblockingIntersectionPosition = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var topblockingIntersectionDistance = (yCoord - vertical_padding) - topblockingIntersectionPosition;
+		var bottomblockingIntersectionDistance = bottomblockingIntersectionPosition - (yCoord - vertical_padding);
+		if (topblockingIntersectionDistance < bottomblockingIntersectionDistance) {
+			yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+		} else {
+			yCoord = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth);
+		}
+
+		var blockingIntersectionIndex = blockingIntersections.findIndex(function(blockingIntersection) {
+			return blockingIntersection.x == xCoord && blockingIntersection.y == yCoord;
+		});
+		if (blockingIntersectionIndex == -1) {
+			blockingIntersections.push({ x: xCoord, y: yCoord, connections: [] });
+		} else {
+			blockingIntersections.splice(blockingIntersectionIndex, 1);
+		}
+	}
+	return true;
+}
+
+function outputMap() {
+	var mapTitle = $('#map_name').val();
+	var mapSource = $('#map_source').val();
+	var custom_map = {
+		name: mapTitle.replace(/ /g, "_"),
+		title: mapTitle,
+		source: mapSource,
+		width: map_width,
+		height: map_height,
+		walls: walls,
+		blockingTiles: blockingTiles,
+		blockingEdges: blockingEdges,
+		blockingIntersections: blockingIntersections,
+		offMapTiles: offMapTiles
+	};
+	console.log(JSON.stringify(custom_map));
 }
 
 function selectTile(clientX, clientY, target) {
@@ -229,7 +488,7 @@ function selectTile(clientX, clientY, target) {
 		attackingTile = { x: xCoord, y: yCoord };
 	} else if (target == 'defender') {
 		defendingTile = { x: xCoord, y: yCoord };
-	} else {
+	} else if (target == 'blocker') {
 		var blockerIndex = blockers.findIndex(function(tile) {
 			return tile.x == xCoord && tile.y == yCoord;
 		});
@@ -245,20 +504,33 @@ function selectTile(clientX, clientY, target) {
 function drawOffMapTile(tile) {
 	var xCoord = (tile.x * boxWidth) + horizontal_padding;
 	var yCoord = (tile.y * boxWidth) + vertical_padding;
-	context.fillStyle = 'rgba(0, 0, 0)';
+	if (map_name == 'custom') {
+		context.fillStyle = 'blue';
+	} else {
+		context.fillStyle = 'rgba(0, 0, 0)';
+	}
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawBlockingTile(tile) {
 	var xCoord = (tile.x * boxWidth) + horizontal_padding;
 	var yCoord = (tile.y * boxWidth) + vertical_padding;
-	context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+	if (map_name == 'custom') {
+		context.fillStyle = 'rgba(157, 5, 181, 0.5)';
+	} else {
+		context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+	}
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawWall(wall) {
 	context.beginPath();
-	context.strokeStyle = "black";
+
+	if (map_name == 'custom') {
+		context.strokeStyle = 'blue';
+	} else {
+		context.strokeStyle = "black";
+	}
 	var startX = (wall[0].x * boxWidth) + horizontal_padding;
 	var startY = (wall[0].y * boxWidth) + vertical_padding;
 	var endX = (wall[1].x * boxWidth) + horizontal_padding;
@@ -292,7 +564,11 @@ function drawEdge(edge) {
 
 function drawBlockingEdge(edge) {
 	context.beginPath();
-	context.strokeStyle = "red";
+	if (map_name == 'custom') {
+		context.strokeStyle = 'rgba(157, 5, 181, 0.5)';
+	} else {
+		context.strokeStyle = "red";
+	}
 	var startX = (edge[0].x * boxWidth) + horizontal_padding;
 	var startY = (edge[0].y * boxWidth) + vertical_padding;
 	var endX = (edge[1].x * boxWidth) + horizontal_padding;
@@ -309,22 +585,22 @@ function drawBlockingEdge(edge) {
 
 function drawBlockingIntersection(intersection) {
 	context.beginPath();
-	context.strokeStyle = "red";
+	context.strokeStyle = "green";
 	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
 	var yCoord = (intersection.y * boxWidth) + vertical_padding;
 	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
-	context.fillStyle = 'rgba(200, 0, 0)';
+	context.fillStyle = 'rgba(0, 200, 0)';
 	context.fill();
 	context.stroke();
 }
 
 function drawVerboseBlockingIntersection(intersection) {
 	context.beginPath();
-	context.strokeStyle = "red";
+	context.strokeStyle = "green";
 	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
 	var yCoord = (intersection.y * boxWidth) + vertical_padding;
 	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
-	context.fillStyle = 'rgba(200, 0, 0)';
+	context.fillStyle = 'rgba(0, 200, 0)';
 	context.fill();
 	context.lineWidth = 1;
 	context.stroke();
@@ -1620,9 +1896,14 @@ $(function () {
 	blocker_image.src = './images/blocker.png';
 
 	map_name = $('#selected_map option:selected').val();
-	if (ia_los_maps[map_name]) {
+	if (map_name == 'custom') {
+		showMapEditIcons();
+		loadCustomMap();
+	} else if (ia_los_maps[map_name]) {
+		showTargetIcons();
 		loadMap(map_name);
 	} else {
+		showTargetIcons();
 		getMap(map_name);
 	}
 })
@@ -1630,12 +1911,18 @@ $(function () {
 function boardClick(event) {
 	if (!canvas.getContext) { return; }
 	var target = $('input[name=target]:checked' ).val();
-	var boardUpdated = selectTile(event.clientX, event.clientY, target);
-	if (boardUpdated) {
-		drawBoard(function () {
-			calculateLoS();
-			drawLinesOfSight();
-		});
+	var mapName = $('#selected_map option:selected').val();
+	if (mapName == 'custom') {
+		editMap(event.clientX, event.clientY, target);
+		drawBoard();
+	} else {
+		var boardUpdated = selectTile(event.clientX, event.clientY, target);
+		if (boardUpdated) {
+			drawBoard(function () {
+				calculateLoS();
+				drawLinesOfSight();
+			});
+		}
 	}
 }
 
@@ -1654,11 +1941,29 @@ $(document).on('change', '#linesOfSight', function() {
 });
 
 $(document).on('change', '#selected_map', function() {
+	var prev_map_name = map_name;
 	map_name = $('#selected_map option:selected').val();
-	if (ia_los_maps[map_name]) {
+	if (map_name == 'custom') {
+		showMapEditIcons();
+		loadCustomMap();
+	} else if (ia_los_maps[map_name]) {
+		if (prev_map_name == 'custom') {
+			$('input[name="gridDisplay"][value="map"]').prop("checked", true);
+			showTargetIcons();
+		}
 		loadMap(map_name);
 	} else {
+		if (prev_map_name == 'custom') {
+			$('input[name="gridDisplay"][value="map"]').prop("checked", true);
+			showTargetIcons();
+		}
 		getMap(map_name);
+	}
+});
+
+$(document).on('change', '[data-custom-dimensions]', function() {
+	if (map_name == 'custom') {
+		loadCustomMap();
 	}
 });
 
@@ -1672,4 +1977,15 @@ $(document).on('click', '#rotate_clockwise', function () {
 	
 $(document).on('map_loaded', '#map_load', function(event, mapName) {
 	loadMap(mapName);
+})
+
+$(document).on('click', '[data-map-edit-output-map]', function() {
+	outputMap();
+})
+
+$(document).on('click', '[data-map-edit-add-map-image]', function() {
+	var custom_map_image_url = $('#map_image_url').val();
+	if (custom_map_image_url.length > 0) {
+		setCustomMapImage(custom_map_image_url);
+	}
 })
