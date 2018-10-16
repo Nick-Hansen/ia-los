@@ -47,8 +47,7 @@ var custom_map_image_url = '';
 function updateBlockingIntersectionAndConnections() {
 	$('[data-map-edit-tools="intersections"]').html('');
 	var blockingIntersectionAndConnectionsHtml = '';
-	blockingIntersections.sort(function(a,b) { return a.x - b.x; });
-	blockingIntersections.sort(function(a,b) { return a.y - b.y; });
+	blockingIntersections.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
 	blockingIntersectionAndConnectionsHtml += '<div style="margin-bottom: 5px;">'
 	blockingIntersectionAndConnectionsHtml += '<input type="radio" name="blocking_intersection" value="none" ';
 	if (selectedBlockingIntersection == undefined) { blockingIntersectionAndConnectionsHtml += 'checked="checked" ' }
@@ -56,6 +55,7 @@ function updateBlockingIntersectionAndConnections() {
     blockingIntersectionAndConnectionsHtml += '<label for="none"><span>none</span></label>';
     blockingIntersectionAndConnectionsHtml += '</div>'
 	blockingIntersections.forEach(function(intersection) {
+		intersection.connections.sort(function(a,b) { return a[0].y - b[0].y || a[0].x - b[0].x; });
 		var intersectionX = intersection.x;
 		var intersectionY = intersection.y;
 		var selected = selectedBlockingIntersection == undefined ? false :
@@ -556,10 +556,8 @@ function editMap(clientX, clientY, target) {
 }
 
 function outputMap() {
-	offMapTiles.sort(function(a,b) { return a.x - b.x; });
-	offMapTiles.sort(function(a,b) { return a.y - b.y; });
-	blockingTiles.sort(function(a,b) { return a.x - b.x; });
-	blockingTiles.sort(function(a,b) { return a.y - b.y; });
+	offMapTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
+	blockingTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
 	var mapTitle = $('#map_name').val();
 	var mapSource = $('#map_source').val();
 	var custom_map = {
