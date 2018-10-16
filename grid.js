@@ -55,7 +55,7 @@ function updateBlockingIntersectionAndConnections() {
     blockingIntersectionAndConnectionsHtml += '<label for="none"><span>none</span></label>';
     blockingIntersectionAndConnectionsHtml += '</div>'
 	blockingIntersections.forEach(function(intersection) {
-		intersection.connections.sort(function(a,b) { return a[0].y - b[0].y || a[0].x - b[0].x; });
+		intersection.connections.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
 		var intersectionX = intersection.x;
 		var intersectionY = intersection.y;
 		var selected = selectedBlockingIntersection == undefined ? false :
@@ -69,7 +69,7 @@ function updateBlockingIntersectionAndConnections() {
         blockingIntersectionAndConnectionsHtml += '<label for="' + intersectionX + ',' + intersectionY  + '"><span>[' + intersectionX + ',' + intersectionY +'] : </span></label>';
         intersection.connections.forEach(function(connection) {
         	//blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
-        	blockingIntersectionAndConnectionsHtml += ' <span>[' + connection[0].x + ',' + connection[0].y + ']-[' + connection[1].x + ',' + connection[1].y + '], </span>';
+        	blockingIntersectionAndConnectionsHtml += ' <span>[' + intersectionX + ',' + intersectionY + ']-[' + connection.x + ',' + connection.y + '], </span>';
         });
         blockingIntersectionAndConnectionsHtml += '</div>'
 	});
@@ -510,12 +510,15 @@ function editMap(clientX, clientY, target) {
 			alert('connection not connected to intersection');
 			return;
 		}
-		var connectionIndex = blockingIntersection.connections.findIndex(function(connection) {
-			return connection[0].x == xCoord && connection[1].x == xCoord &&
-				connection[0].y == yCoord && connection[1].y == yCoord + 1;
+		var connection = {
+			x : xCoord,
+			y : blockingIntersection.y == yCoord ? yCoord + 1 : yCoord
+		};
+		var connectionIndex = blockingIntersection.connections.findIndex(function(c) {
+			return c.x == connection.x && c.y == connection.y;
 		});
 		if (connectionIndex == -1) {
-			blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
+			blockingIntersection.connections.push(connection);
 		} else {
 			blockingIntersection.connections.splice(connectionIndex, 1);
 		}
@@ -542,12 +545,15 @@ function editMap(clientX, clientY, target) {
 			alert('connection not connected to intersection');
 			return;
 		}
-		var connectionIndex = blockingIntersection.connections.findIndex(function(connection) {
-			return connection[0].x == xCoord && connection[1].x == xCoord + 1 &&
-				connection[0].y == yCoord && connection[1].y == yCoord;
+		var connection = {
+			x : blockingIntersection.x == xCoord ? xCoord + 1 : xCoord,
+			y : yCoord
+		};
+		var connectionIndex = blockingIntersection.connections.findIndex(function(c) {
+			return c.x == connection.x && c.y == connection.y;
 		});
 		if (connectionIndex == -1) {
-			blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord + 1, y: yCoord }]);
+			blockingIntersection.connections.push(connection);
 		} else {
 			blockingIntersection.connections.splice(connectionIndex, 1);
 		}
@@ -646,13 +652,11 @@ function drawWall(wall) {
 	var startY = (wall[0].y * boxWidth) + vertical_padding;
 	var endX = (wall[1].x * boxWidth) + horizontal_padding;
 	var endY = (wall[1].y * boxWidth) + vertical_padding;
-	for (var x = 0; x <= grid_width; x += boxWidth) {
-		context.moveTo(1 + startX, 1 + startY);
-		context.lineTo(1 + endX, 1 + endY);
-		context.moveTo(-1 + startX, -1 + startY);
-		context.lineTo(-1 + endX, -1 + endY);
-	}
-	context.lineWidth = 1;
+	context.moveTo(1 + startX, 1 + startY);
+	context.lineTo(1 + endX, 1 + endY);
+	context.moveTo(-1 + startX, -1 + startY);
+	context.lineTo(-1 + endX, -1 + endY);
+	context.lineWidth = 2;
 	context.stroke();
 }
 
@@ -663,13 +667,11 @@ function drawEdge(edge) {
 	var startY = (edge[0].y * boxWidth) + vertical_padding;
 	var endX = (edge[1].x * boxWidth) + horizontal_padding;
 	var endY = (edge[1].y * boxWidth) + vertical_padding;
-	for (var x = 0; x <= grid_width; x += boxWidth) {
-		context.moveTo(1 + startX, 1 + startY);
-		context.lineTo(1 + endX, 1 + endY);
-		context.moveTo(-1 + startX, -1 + startY);
-		context.lineTo(-1 + endX, -1 + endY);
-	}
-	context.lineWidth = 1;
+	context.moveTo(1 + startX, 1 + startY);
+	context.lineTo(1 + endX, 1 + endY);
+	context.moveTo(-1 + startX, -1 + startY);
+	context.lineTo(-1 + endX, -1 + endY);
+	context.lineWidth = 2;
 	context.stroke();
 }
 
@@ -684,30 +686,26 @@ function drawBlockingEdge(edge) {
 	var startY = (edge[0].y * boxWidth) + vertical_padding;
 	var endX = (edge[1].x * boxWidth) + horizontal_padding;
 	var endY = (edge[1].y * boxWidth) + vertical_padding;
-	for (var x = 0; x <= grid_width; x += boxWidth) {
-		context.moveTo(1 + startX, 1 + startY);
-		context.lineTo(1 + endX, 1 + endY);
-		context.moveTo(-1 + startX, -1 + startY);
-		context.lineTo(-1 + endX, -1 + endY);
-	}
-	context.lineWidth = 1;
+	context.moveTo(1 + startX, 1 + startY);
+	context.lineTo(1 + endX, 1 + endY);
+	context.moveTo(-1 + startX, -1 + startY);
+	context.lineTo(-1 + endX, -1 + endY);
+	context.lineWidth = 2;
 	context.stroke();
 }
 
-function drawBlockingIntersectionConnection(edge) {
+function drawBlockingIntersectionConnection(fromX, fromY, toX, toY) {
 	context.beginPath();
 	context.strokeStyle = 'rgba(0,255,255, 0.5)';
-	var startX = (edge[0].x * boxWidth) + horizontal_padding;
-	var startY = (edge[0].y * boxWidth) + vertical_padding;
-	var endX = (edge[1].x * boxWidth) + horizontal_padding;
-	var endY = (edge[1].y * boxWidth) + vertical_padding;
-	for (var x = 0; x <= grid_width; x += boxWidth) {
-		context.moveTo(1 + startX, 1 + startY);
-		context.lineTo(1 + endX, 1 + endY);
-		context.moveTo(-1 + startX, -1 + startY);
-		context.lineTo(-1 + endX, -1 + endY);
-	}
-	context.lineWidth = 1;
+	var startX = (fromX * boxWidth) + horizontal_padding;
+	var startY = (fromY * boxWidth) + vertical_padding;
+	var endX = (toX * boxWidth) + horizontal_padding;
+	var endY = (toY * boxWidth) + vertical_padding;
+	context.moveTo(1 + startX, 1 + startY);
+	context.lineTo(1 + endX, 1 + endY);
+	context.moveTo(-1 + startX, -1 + startY);
+	context.lineTo(-1 + endX, -1 + endY);
+	context.lineWidth = 2;
 	context.stroke();
 }
 
@@ -733,7 +731,7 @@ function drawVerboseBlockingIntersection(intersection) {
 	context.lineWidth = 1;
 	context.stroke();
 	intersection.connections.forEach(function(connection) {
-		drawBlockingIntersectionConnection(connection);
+		drawBlockingIntersectionConnection(intersection.x, intersection.y, connection.x, connection.y);
 	})	
 }
 
