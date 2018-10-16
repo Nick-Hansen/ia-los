@@ -33,6 +33,11 @@ var walls = [];
 var blockingTiles = [];
 var blockingEdges = [];
 var blockingIntersections = [];
+var attackerLOSTiles = [];
+var defenderLOSTiles = [];
+var mutualLOSTiles = [];
+var previousAttackerLoSTile = { x: -1, y: -1};
+var previousDefenderLoSTile = { x: -1, y: -1};
 
 var map_images = ['Mos_Eisley_Back_Alleys',
 'Tarkin_Initiative_Labs',
@@ -42,6 +47,15 @@ var map_image_available = false;
 function loadMap(mapName) {
 	attackingTile = { x: -1, y: -1};
 	defendingTile = { x: -1, y: -1};
+	attackerLOSTiles = [
+		{ "x": 0, "y": 0 }
+	];
+	defenderLOSTiles = [
+		{ "x": 2, "y": 2 }
+	];
+	mutualLOSTiles = [
+		{ "x": 1, "y": 1 }
+	];
 	blockers = [];
 	linesOfSight = {};
 
@@ -81,8 +95,8 @@ function loadMap(mapName) {
 }
 
 function getMap(mapName) {
-	$.getJSON('maps/' + mapName + '.json')
-	//$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
+	//$.getJSON('maps/' + mapName + '.json')
+	$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
 	.done(function( data ) {
 		ia_los_maps[mapName] = data;
 		loadMap(mapName);
@@ -100,12 +114,14 @@ function drawBoard(callback){
 	context.clearRect(horizontal_padding, vertical_padding, grid_width, grid_height);
 	if (gridDisplay == 'grid') {
 		drawGrid();
+		drawLOSTiles();
 		drawAttacker();
 		drawDefender();
 		blockers.forEach(drawBlocker);
 		if (callback) { callback(); }
 	} else if (gridDisplay == 'map') {
 		drawMap(function () {
+			drawLOSTiles();
 			drawAttacker();
 			drawDefender();
 			blockers.forEach(drawBlocker);
@@ -114,6 +130,7 @@ function drawBoard(callback){
 	} else if (gridDisplay == 'both') {
 		drawMap(function () {
 			drawGrid();
+			drawLOSTiles();
 			drawAttacker();
 			drawDefender();
 			blockers.forEach(drawBlocker);
@@ -125,7 +142,7 @@ function drawBoard(callback){
 function rotate_counter_clockwise() {
 	rotate -= 90 * Math.PI / 180.0;
 	//drawBoard(function () {
-	//	calculateLoS();
+	//	calculateLoSFromAttackerToDefender();
 	//	drawLinesOfSight();
 	//})
 }
@@ -133,7 +150,7 @@ function rotate_counter_clockwise() {
 function rotate_clockwise() {
 	rotate += 90 * Math.PI / 180.0;
 	//drawBoard(function () {
-	//	calculateLoS();
+	//	calculateLoSFromAttackerToDefender();
 	//	drawLinesOfSight();
 	//});
 }
@@ -198,6 +215,22 @@ function drawGrid(){
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 }
 
+function drawLOSTiles() {
+	attackerLOSTiles.forEach(drawAttackerLOSTile);
+	//console.log('Attacker LOS Tiles');
+	//attackerLOSTiles.forEach(function (tile) {
+	//	console.log(JSON.stringify(tile));
+	//})
+	//console.log('Defender LOS Tiles');
+	//defenderLOSTiles.forEach(function (tile) {
+	//	console.log(JSON.stringify(tile));
+	//})
+	//console.log('Mutual LOS Tiles');
+	//mutualLOSTiles.forEach(function (tile) {
+	//	console.log(JSON.stringify(tile));
+	//})
+}
+
 function getTile(clientX, clientY, event) {
 	var rect = canvas.getBoundingClientRect();
 	x = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
@@ -253,6 +286,13 @@ function drawBlockingTile(tile) {
 	var xCoord = (tile.x * boxWidth) + horizontal_padding;
 	var yCoord = (tile.y * boxWidth) + vertical_padding;
 	context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
+}
+
+function drawAttackerLOSTile(tile) {
+	var xCoord = (tile.x * boxWidth) + horizontal_padding;
+	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	context.fillStyle = 'rgba(255, 255, 0, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
@@ -468,7 +508,134 @@ function updateLinesOfSightDropdown(options) {
 	}
 }
 
-function calculateLoS() {
+function calculateLoSTiles(callback) {
+	//check for change
+	//if (previousAttackerLoSTile.x != attackingTile.x && previousAttackerLoSTile.y != attackingTile.y) {
+		//console.log('attacking tile moved');
+		attackerLOSTiles = [];
+		//check to see attacking tile present
+		if (attackingTile.x != -1 && attackingTile.y != -1) {
+			console.log('attacking tile present: {' + attackingTile.x + ', ' + attackingTile.y+ '}');
+			for (var w = 0; w < map_width; w++) {
+				for (var h = 0; h < map_height; h++) {
+					var attckerHasLoSToTile = calculateLoSFromTileToTile(attackingTile.x, attackingTile.y, w, h);
+					if (attckerHasLoSToTile == true) {
+						attackerLOSTiles.push({ "x": w, "y": h });
+					}
+				}
+			}
+		}
+		//attackerLOSTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
+		//attackerLOSTiles.forEach(function(tile) {
+		//	console.log('tile {' + tile.x + ', ' + tile.y + '}');
+		//});
+	//} else {
+	//	console.log(console.log('attacking tile did not move'));
+	//}
+	//previousAttackerLoSTile.x = attackingTile.x;
+	//previousAttackerLoSTile.y = attackingTile.y;
+	
+	//foreach tile
+		//if not off map, and not attacker
+		//check for attacker los
+		//add to attacker los
+	//foreach tile
+		//if not off map, and not defender
+		//check for los
+		//add to defender los
+	//foreach attacker los tile
+		//if tile present in defender tiles
+		//remove from attacker los tiles
+		//remove from defender los tiles
+		//add to mutual los
+	if (callback) { callback(); }
+}
+
+function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
+	if (fromTileX == toTileX && fromTileY == toTileY) { return true; }
+	var offMapTileIndex = offMapTiles.findIndex(function(off_map_tile) {
+		return off_map_tile.x == toTileX && off_map_tile.y == toTileY;
+	})
+	if (offMapTileIndex > -1) { return false; }
+
+	var from_tl = { x: fromTileX, y: fromTileY };
+	var from_tr = { x: fromTileX + 1, y: fromTileY };
+	var from_bl = { x: fromTileX, y: fromTileY + 1 };
+	var from_br = { x: fromTileX + 1, y: fromTileY + 1 };
+	var to_tl = { x: toTileX, y: toTileY };
+	var to_tr = { x: toTileX + 1, y: toTileY };
+	var to_bl = { x: toTileX, y: toTileY + 1 };
+	var to_br = { x: toTileX + 1, y: toTileY + 1 };
+
+	var tl_to_tl = getLosFromCornerToCorner(from_tl, to_tl);
+	var tl_to_tr = getLosFromCornerToCorner(from_tl, to_tr);
+	var tl_to_br = getLosFromCornerToCorner(from_tl, to_br);
+	var tl_to_bl = getLosFromCornerToCorner(from_tl, to_bl);
+	var tl_to_tl_tr_overlaps = pathsOverlap(from_tl, to_tl, to_tr);
+	var tl_to_tr_br_overlaps = pathsOverlap(from_tl, to_tr, to_br);
+	var tl_to_bl_br_overlaps = pathsOverlap(from_tl, to_bl, to_br);
+	var tl_to_tl_bl_overlaps = pathsOverlap(from_tl, to_tl, to_bl);
+	if ((tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps) ||
+		(tl_to_tr && tl_to_br && !tl_to_tr_br_overlaps) ||
+		(tl_to_bl && tl_to_br && !tl_to_bl_br_overlaps) ||
+		(tl_to_tl && tl_to_bl && !tl_to_tl_bl_overlaps)) {
+		//console.log('TL Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+		return true;
+	}
+
+	var tr_to_tl = getLosFromCornerToCorner(from_tr, to_tl);
+	var tr_to_tr = getLosFromCornerToCorner(from_tr, to_tr);
+	var tr_to_br = getLosFromCornerToCorner(from_tr, to_br);
+	var tr_to_bl = getLosFromCornerToCorner(from_tr, to_bl);
+	var tr_to_tl_tr_overlaps = pathsOverlap(from_tr, to_tl, to_tr);
+	var tr_to_tr_br_overlaps = pathsOverlap(from_tr, to_tr, to_br);
+	var tr_to_bl_br_overlaps = pathsOverlap(from_tr, to_bl, to_br);
+	var tr_to_tl_bl_overlaps = pathsOverlap(from_tr, to_tl, to_bl);
+	if ((tr_to_tl && tr_to_tr && !tr_to_tl_tr_overlaps) ||
+		(tr_to_tr && tr_to_br && !tr_to_tr_br_overlaps) ||
+		(tr_to_bl && tr_to_br && !tr_to_bl_br_overlaps) ||
+		(tr_to_tl && tr_to_bl && !tr_to_tl_bl_overlaps)) {
+		//console.log('TR Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+		return true;
+	}
+
+	var bl_to_tl = getLosFromCornerToCorner(from_bl, to_tl);
+	var bl_to_tr = getLosFromCornerToCorner(from_bl, to_tr);
+	var bl_to_br = getLosFromCornerToCorner(from_bl, to_br);
+	var bl_to_bl = getLosFromCornerToCorner(from_bl, to_bl);
+	var bl_to_tl_tr_overlaps = pathsOverlap(from_bl, to_tl, to_tr);
+	var bl_to_tr_br_overlaps = pathsOverlap(from_bl, to_tr, to_br);
+	var bl_to_bl_br_overlaps = pathsOverlap(from_bl, to_bl, to_br);
+	var bl_to_tl_bl_overlaps = pathsOverlap(from_bl, to_tl, to_bl);
+	if ((bl_to_tl && bl_to_tr && !bl_to_tl_tr_overlaps) ||
+		(bl_to_tr && bl_to_br && !bl_to_tr_br_overlaps) ||
+		(bl_to_bl && bl_to_br && !bl_to_bl_br_overlaps) ||
+		(bl_to_tl && bl_to_bl && !bl_to_tl_bl_overlaps)) {
+		//console.log('BL Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+		return true;
+	}
+
+	var br_to_tl = getLosFromCornerToCorner(from_br, to_tl);
+	var br_to_tr = getLosFromCornerToCorner(from_br, to_tr);
+	var br_to_br = getLosFromCornerToCorner(from_br, to_br);
+	var br_to_bl = getLosFromCornerToCorner(from_br, to_bl);
+	var br_to_tl_tr_overlaps = pathsOverlap(from_br, to_tl, to_tr);
+	var br_to_tr_br_overlaps = pathsOverlap(from_br, to_tr, to_br);
+	var br_to_bl_br_overlaps = pathsOverlap(from_br, to_bl, to_br);
+	var br_to_tl_bl_overlaps = pathsOverlap(from_br, to_tl, to_bl);
+	if ((br_to_tl && br_to_tr && !br_to_tl_tr_overlaps) ||
+	(br_to_tr && br_to_br && !br_to_tr_br_overlaps) ||
+	(br_to_bl && br_to_br && !br_to_bl_br_overlaps) ||
+	(br_to_tl && br_to_bl && !br_to_tl_bl_overlaps)) {
+		//console.log('BR Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+		return true;
+	}
+
+	console.log('NO Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+	return false;
+}
+
+function calculateLoSFromAttackerToDefender() {
 	if ((attackingTile.x != -1 && attackingTile.y != -1 &&
 		 defendingTile.x != -1 && defendingTile.y != -1) == false) {
 		return;
@@ -1632,9 +1799,11 @@ function boardClick(event) {
 	var target = $('input[name=target]:checked' ).val();
 	var boardUpdated = selectTile(event.clientX, event.clientY, target);
 	if (boardUpdated) {
-		drawBoard(function () {
-			calculateLoS();
-			drawLinesOfSight();
+		calculateLoSTiles(function () {
+			drawBoard(function () {
+				calculateLoSFromAttackerToDefender();
+				drawLinesOfSight();
+			});
 		});
 	}
 }
@@ -1642,7 +1811,6 @@ function boardClick(event) {
 
 $(document).on('change', 'input[type=radio][name=gridDisplay]', function() {
 	drawBoard(function () {
-		calculateLoS();
 		drawLinesOfSight();
 	});
 })
