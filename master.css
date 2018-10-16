@@ -81,7 +81,7 @@ label[for="wall_horizontal"] {
 	margin: 10px;
 }
 
-label[for="blocking_edge_vertical"] {
+label[for="blocking_edge_vertical"], label[for="blocking_intersection_vertical_connection"] {
 	display: inline-block;
 	background-color: red;
 	border: 2px solid red;
@@ -91,7 +91,7 @@ label[for="blocking_edge_vertical"] {
 	margin: 10px;
 }
 
-label[for="blocking_edge_horizontal"] {
+label[for="blocking_edge_horizontal"], label[for="blocking_intersection_horizontal_connection"] {
 	display: inline-block;
 	background-color: red;
 	border: 2px solid red;
@@ -120,7 +120,10 @@ input[type="radio"]:checked+label[for="wall_vertical"],
 input[type="radio"]:checked+label[for="wall_horizontal"],
 input[type="radio"]:checked+label[for="blocking_edge_vertical"],
 input[type="radio"]:checked+label[for="blocking_edge_horizontal"],
-input[type="radio"]:checked+label[for="blocking_intersection"] {
+input[type="radio"]:checked+label[for="blocking_intersection"],
+input[type="radio"]:checked+label[for="blocking_intersection_vertical_connection"],
+input[type="radio"]:checked+label[for="blocking_intersection_horizontal_connection"]
+ {
 	box-shadow: 0 0 5px 5px blue;
 }
 

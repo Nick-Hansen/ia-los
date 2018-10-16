@@ -2,7 +2,7 @@
 var map_name = '';
 var map_width = 0;
 var map_height = 0;
-var boxWidth = 30;
+var boxWidth = 35;
 // Padding
 var horizontal_padding = 0;
 var vertical_padding = 0;
@@ -35,11 +35,46 @@ var blockingTiles = [];
 var blockingEdges = [];
 var blockingIntersections = [];
 
+var selectedBlockingIntersection = undefined; 
+
 var map_images = ['Mos_Eisley_Back_Alleys',
 'Tarkin_Initiative_Labs',
 'Uscru_Entertainment_District'];
 var map_image_available = false;
 var custom_map_image_url = '';
+
+
+function updateBlockingIntersectionAndConnections() {
+	$('[data-map-edit-tools="intersections"]').html('');
+	var blockingIntersectionAndConnectionsHtml = '';
+	blockingIntersections.sort(function(a,b) { return a.x - b.x; });
+	blockingIntersections.sort(function(a,b) { return a.y - b.y; });
+	blockingIntersectionAndConnectionsHtml += '<div style="margin-bottom: 5px;">'
+	blockingIntersectionAndConnectionsHtml += '<input type="radio" name="blocking_intersection" value="none" ';
+	if (selectedBlockingIntersection == undefined) { blockingIntersectionAndConnectionsHtml += 'checked="checked" ' }
+	blockingIntersectionAndConnectionsHtml += '>';
+    blockingIntersectionAndConnectionsHtml += '<label for="none"><span>none</span></label>';
+    blockingIntersectionAndConnectionsHtml += '</div>'
+	blockingIntersections.forEach(function(intersection) {
+		var intersectionX = intersection.x;
+		var intersectionY = intersection.y;
+		var selected = selectedBlockingIntersection == undefined ? false :
+			selectedBlockingIntersection.x == intersectionX && 
+			selectedBlockingIntersection.y == intersectionY;
+		blockingIntersectionAndConnectionsHtml += '<div style="margin-bottom: 5px;">'
+
+		blockingIntersectionAndConnectionsHtml += '<input type="radio" name="blocking_intersection" value="' + intersectionX + ',' + intersectionY  + '" ';
+		if (selected) { blockingIntersectionAndConnectionsHtml += 'checked="checked" ' }
+		blockingIntersectionAndConnectionsHtml += '>';
+        blockingIntersectionAndConnectionsHtml += '<label for="' + intersectionX + ',' + intersectionY  + '"><span>[' + intersectionX + ',' + intersectionY +'] : </span></label>';
+        intersection.connections.forEach(function(connection) {
+        	//blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
+        	blockingIntersectionAndConnectionsHtml += ' <span>[' + connection[0].x + ',' + connection[0].y + ']-[' + connection[1].x + ',' + connection[1].y + '], </span>';
+        });
+        blockingIntersectionAndConnectionsHtml += '</div>'
+	});
+	$('[data-map-edit-tools="intersections"]').html(blockingIntersectionAndConnectionsHtml);
+}
 
 function showMapEditIcons() {
 	$('[data-target-tools]').hide();
@@ -275,8 +310,19 @@ function drawGrid(){
 	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
 	blockingEdges.forEach(drawBlockingEdge);
-	blockingIntersections.forEach(drawBlockingIntersection);
+	//blockingIntersections.forEach(drawBlockingIntersection);
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
+	if (map_name == 'custom') {
+		blockingIntersections.forEach(function (intersection) {
+			if (selectedBlockingIntersection != undefined &&
+				selectedBlockingIntersection.x == intersection.x &&
+				selectedBlockingIntersection.y == intersection.y) {
+				drawVerboseBlockingIntersection(intersection);
+			} else {
+				drawBlockingIntersection(intersection);
+			}
+		});
+	}
 }
 
 function getTile(clientX, clientY, event) {
@@ -412,8 +458,7 @@ function editMap(clientX, clientY, target) {
 		} else {
 			blockingEdges.splice(blockingEdgeIndex, 1);
 		}
-	} 
-	else if (target == 'blocking_intersection') { 
+	} else if (target == 'blocking_intersection') { 
 		//convert to coordinates
 		var leftblockingIntersectionPosition = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
 		var rightblockingIntersectionPosition = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
@@ -442,11 +487,79 @@ function editMap(clientX, clientY, target) {
 		} else {
 			blockingIntersections.splice(blockingIntersectionIndex, 1);
 		}
+	} else if (target == 'blocking_intersection_vertical_connection') {
+		if (selectedBlockingIntersection == undefined) { return; }
+		//convert to coordinates
+		var leftConnectionPosition = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var rightConnectionPosition = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth) * boxWidth;
+		var leftConnectionDistance = (xCoord - horizontal_padding) - leftConnectionPosition;
+		var rightConnectionDistance = rightConnectionPosition - (xCoord - horizontal_padding);
+		if (leftConnectionDistance < rightConnectionDistance) {
+			xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		} else {
+			xCoord = Math.ceil((clientX - rect.left - horizontal_padding) / boxWidth);
+		}
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var blockingIntersection = blockingIntersections.find(function(intersection) {
+			return intersection.x == selectedBlockingIntersection.x &&
+				intersection.y == selectedBlockingIntersection.y;
+		});
+		if (((blockingIntersection.x == xCoord && blockingIntersection.y == yCoord) == false) &&
+			((blockingIntersection.x == xCoord && blockingIntersection.y == yCoord + 1) == false)) {
+			alert('connection not connected to intersection');
+			return;
+		}
+		var connectionIndex = blockingIntersection.connections.findIndex(function(connection) {
+			return connection[0].x == xCoord && connection[1].x == xCoord &&
+				connection[0].y == yCoord && connection[1].y == yCoord + 1;
+		});
+		if (connectionIndex == -1) {
+			blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord, y: yCoord + 1 }]);
+		} else {
+			blockingIntersection.connections.splice(connectionIndex, 1);
+		}
+	} else if (target == 'blocking_intersection_horizontal_connection') {
+		if (selectedBlockingIntersection == undefined) { return; }
+		//convert to coordinates
+		var topConnectionPosition = Math.floor((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var bottomConnectionPosition = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth) * boxWidth;
+		var topConnectionDistance = (yCoord - vertical_padding) - topConnectionPosition;
+		var bottomConnectionDistance = bottomConnectionPosition - (yCoord - vertical_padding);
+		if (topConnectionDistance < bottomConnectionDistance) {
+			yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+		} else {
+			yCoord = Math.ceil((clientY - rect.top - vertical_padding) / boxWidth);
+		}
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+
+		var blockingIntersection = blockingIntersections.find(function(intersection) {
+			return intersection.x == selectedBlockingIntersection.x &&
+				intersection.y == selectedBlockingIntersection.y;
+		});
+		if (((blockingIntersection.x == xCoord && blockingIntersection.y == yCoord) == false) &&
+			((blockingIntersection.x == xCoord + 1 && blockingIntersection.y == yCoord) == false)) {
+			alert('connection not connected to intersection');
+			return;
+		}
+		var connectionIndex = blockingIntersection.connections.findIndex(function(connection) {
+			return connection[0].x == xCoord && connection[1].x == xCoord + 1 &&
+				connection[0].y == yCoord && connection[1].y == yCoord;
+		});
+		if (connectionIndex == -1) {
+			blockingIntersection.connections.push([{ x: xCoord, y: yCoord }, { x: xCoord + 1, y: yCoord }]);
+		} else {
+			blockingIntersection.connections.splice(connectionIndex, 1);
+		}
 	}
 	return true;
 }
 
 function outputMap() {
+	offMapTiles.sort(function(a,b) { return a.x - b.x; });
+	offMapTiles.sort(function(a,b) { return a.y - b.y; });
+	blockingTiles.sort(function(a,b) { return a.x - b.x; });
+	blockingTiles.sort(function(a,b) { return a.y - b.y; });
 	var mapTitle = $('#map_name').val();
 	var mapSource = $('#map_source').val();
 	var custom_map = {
@@ -583,6 +696,23 @@ function drawBlockingEdge(edge) {
 	context.stroke();
 }
 
+function drawBlockingIntersectionConnection(edge) {
+	context.beginPath();
+	context.strokeStyle = 'rgba(0,255,255, 0.5)';
+	var startX = (edge[0].x * boxWidth) + horizontal_padding;
+	var startY = (edge[0].y * boxWidth) + vertical_padding;
+	var endX = (edge[1].x * boxWidth) + horizontal_padding;
+	var endY = (edge[1].y * boxWidth) + vertical_padding;
+	for (var x = 0; x <= grid_width; x += boxWidth) {
+		context.moveTo(1 + startX, 1 + startY);
+		context.lineTo(1 + endX, 1 + endY);
+		context.moveTo(-1 + startX, -1 + startY);
+		context.lineTo(-1 + endX, -1 + endY);
+	}
+	context.lineWidth = 1;
+	context.stroke();
+}
+
 function drawBlockingIntersection(intersection) {
 	context.beginPath();
 	context.strokeStyle = "green";
@@ -599,13 +729,13 @@ function drawVerboseBlockingIntersection(intersection) {
 	context.strokeStyle = "green";
 	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
 	var yCoord = (intersection.y * boxWidth) + vertical_padding;
-	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
+	context.arc(xCoord, yCoord, boxWidth / 4, 0, 2 * Math.PI);
 	context.fillStyle = 'rgba(0, 200, 0)';
 	context.fill();
 	context.lineWidth = 1;
 	context.stroke();
 	intersection.connections.forEach(function(connection) {
-		drawBlockingEdge([ { x: intersection.x, y: intersection.y }, connection ]);
+		drawBlockingIntersectionConnection(connection);
 	})	
 }
 
@@ -1908,13 +2038,36 @@ $(function () {
 	}
 })
 
+function setSelectedBlockingIntersection(blockingIntersection) {
+	if (blockingIntersection == undefined) { return; }
+	if (blockingIntersection == "none") { 
+		selectedBlockingIntersection = undefined;
+		return;
+	}
+	var blockingIntersectionX = parseInt(blockingIntersection.split(',')[0]);
+	var blockingIntersectionY = parseInt(blockingIntersection.split(',')[1]);
+
+	selectedBlockingIntersection = {
+		x : blockingIntersectionX,
+		y : blockingIntersectionY
+	};
+}
+
 function boardClick(event) {
 	if (!canvas.getContext) { return; }
 	var target = $('input[name=target]:checked' ).val();
 	var mapName = $('#selected_map option:selected').val();
+	var edit_blockingIntersection = $('input[name=blocking_intersection]:checked' ).val();
+	setSelectedBlockingIntersection(edit_blockingIntersection);
+	
 	if (mapName == 'custom') {
 		editMap(event.clientX, event.clientY, target);
 		drawBoard();
+		if (target === "blocking_intersection" ||
+			target === "blocking_intersection_vertical_connection" ||
+			target === "blocking_intersection_horizontal_connection") {
+			updateBlockingIntersectionAndConnections(); 
+		}
 	} else {
 		var boardUpdated = selectTile(event.clientX, event.clientY, target);
 		if (boardUpdated) {
@@ -1978,6 +2131,12 @@ $(document).on('click', '#rotate_clockwise', function () {
 $(document).on('map_loaded', '#map_load', function(event, mapName) {
 	loadMap(mapName);
 })
+
+$(document).on('click', '[name="blocking_intersection"]', function() {
+	var edit_blockingIntersection = $('input[name=blocking_intersection]:checked' ).val();
+	setSelectedBlockingIntersection(edit_blockingIntersection);
+	drawBoard();
+});
 
 $(document).on('click', '[data-map-edit-output-map]', function() {
 	outputMap();
