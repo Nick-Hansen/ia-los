@@ -42,10 +42,27 @@
         <div style="margin-bottom: 5px;">
           <input type="radio" name="target" value="attacker" checked="checked" id="attacker" class="image-radio">
           <label for="attacker"><img src="images/attacker.png"></label>
+          <label><span>Attacker</span></label>
           <input type="radio" name="target" value="defender" id="defender" class="image-radio">
           <label for="defender"><img src="images/defender.png"></label>
+          <label><span>Defender</span></label>
           <input type="radio" name="target" value="blocker" id="blocker" class="image-radio">
           <label for="blocker"><img src="images/blocker.png"></label>
+          <label><span>Blocking Model</span></label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <button type="button" id="clearMap">Clear Map</button>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <input type="checkbox" id="highlightAttackerLoS" />
+          <label for="highlightAttackerLoS"><span class="key-color AttackerLoS"></span>Highlight spaces to which Attacker has LoS</label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <input type="checkbox" id="highlightDefenderLoS" />
+          <label for="highlightDefenderLoS"><span class="key-color DefenderLoS"></span>Highlight spaces which have LoS to Defender</label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <span class="key-color MutualLoS"></span><label>Spaces to which Attacker has LoS and have LoS to Defender</label>
         </div>
         <div style="margin-top: 5px; margin-bottom: 5px;">
           <label>Attacker Line of Sight: </label>
