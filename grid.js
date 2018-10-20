@@ -39,7 +39,10 @@ var mutualLOSTiles = [];
 
 var map_images = ['Mos_Eisley_Back_Alleys',
 'Tarkin_Initiative_Labs',
-'Uscru_Entertainment_District'];
+'Uscru_Entertainment_District',
+'30th_Floor_Plaza',
+'Anchorhead_Cantina',
+'Bespin_Tibanna_Facility'];
 var map_image_available = false;
 
 function clearMap(callback) {
