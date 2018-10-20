@@ -42,7 +42,9 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Uscru_Entertainment_District',
 '30th_Floor_Plaza',
 'Anchorhead_Cantina',
-'Bespin_Tibanna_Facility'];
+'Bespin_Tibanna_Facility',
+'Chopper_Base_Atollon',
+'Climate_Research_Camp'];
 var map_image_available = false;
 
 function clearMap(callback) {
