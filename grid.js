@@ -1332,7 +1332,8 @@ function intersectionBlocksPath(blockingIntersection, fromTileX, fromTileY, toTi
 			//attack from bot
 			else if (deltaY < 0) {
 				pathBlocked = (leftConnection && topConnection) ||
-					(leftConnection && rightConnection);
+					(leftConnection && rightConnection) ||
+					(leftConnection && bottomConnection);
 			}
 		} else if (defendingTileRightOfIntersection && defendingTileAboveIntersection) {
 			//attack from top left
@@ -1368,7 +1369,8 @@ function intersectionBlocksPath(blockingIntersection, fromTileX, fromTileY, toTi
 			//attack from bot
 			else if (deltaY < 0) {
 				pathBlocked = (topConnection && rightConnection) ||
-					(leftConnection && rightConnection);
+					(leftConnection && rightConnection) ||
+					(rightConnection && bottomConnection);
 			}
 		} else if (defendingTileRightOfIntersection && defendingTileBelowIntersection) {
 			//attack from top left
