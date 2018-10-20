@@ -1325,7 +1325,8 @@ function intersectionBlocksPath(blockingIntersection, fromTileX, fromTileY, toTi
 			//attack from right
 			else if (deltaX < 0) {
 				pathBlocked = (leftConnection && topConnection) ||
-					(topConnection && bottomConnection);
+					(topConnection && bottomConnection) ||
+					(topConnection && rightConnection);
 			}
 			//attack from top
 			else if (deltaY > 0) { return false; }
