@@ -44,7 +44,8 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Anchorhead_Cantina',
 'Bespin_Tibanna_Facility',
 'Chopper_Base_Atollon',
-'Climate_Research_Camp'];
+'Climate_Research_Camp',
+'Coruscant_Back_Alleys'];
 var map_image_available = false;
 
 function clearMap(callback) {
