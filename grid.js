@@ -47,6 +47,7 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Climate_Research_Camp',
 'Corellian_Underground',
 'Coruscant_Back_Alleys',
+'Coruscant_Landfill',
 'Lothal_Wastes'];
 var map_image_available = false;
 
