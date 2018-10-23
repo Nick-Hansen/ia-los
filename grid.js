@@ -619,20 +619,27 @@ function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
 	var to_tr = { x: toTileX + 1, y: toTileY };
 	var to_bl = { x: toTileX, y: toTileY + 1 };
 	var to_br = { x: toTileX + 1, y: toTileY + 1 };
+	var to_top = { x: toTileX + 0.5, y: toTileY };
+	var to_right = { x: toTileX + 1, y: toTileY + 0.5 };
+	var to_bottom = { x: toTileX + 0.5, y: toTileY + 1 };
+	var to_left = { x: toTileX, y: toTileY + 0.5 };
 
 	var tl_to_tl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tl);
 	var tl_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tr);
 	var tl_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_br);
 	var tl_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bl);
+	var tl_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_top);
+	var tl_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_right);
+	var tl_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bottom);
+	var tl_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_left);
 	var tl_to_tl_tr_overlaps = pathsOverlap(from_tl, to_tl, to_tr);
 	var tl_to_tr_br_overlaps = pathsOverlap(from_tl, to_tr, to_br);
 	var tl_to_bl_br_overlaps = pathsOverlap(from_tl, to_bl, to_br);
 	var tl_to_tl_bl_overlaps = pathsOverlap(from_tl, to_tl, to_bl);
-	if ((tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps) ||
-		(tl_to_tr && tl_to_br && !tl_to_tr_br_overlaps) ||
-		(tl_to_bl && tl_to_br && !tl_to_bl_br_overlaps) ||
-		(tl_to_tl && tl_to_bl && !tl_to_tl_bl_overlaps)) {
-		//console.log('TL Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+	if ((tl_to_tl && tl_to_tr && tl_to_top && !tl_to_tl_tr_overlaps) ||
+		(tl_to_tr && tl_to_br && tl_to_right && !tl_to_tr_br_overlaps) ||
+		(tl_to_bl && tl_to_br && tl_to_bottom && !tl_to_bl_br_overlaps) ||
+		(tl_to_tl && tl_to_bl && tl_to_left && !tl_to_tl_bl_overlaps)) {
 		return true;
 	}
 
@@ -640,15 +647,18 @@ function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
 	var tr_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_tr);
 	var tr_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_br);
 	var tr_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bl);
+	var tr_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_top);
+	var tr_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_right);
+	var tr_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bottom);
+	var tr_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_left);
 	var tr_to_tl_tr_overlaps = pathsOverlap(from_tr, to_tl, to_tr);
 	var tr_to_tr_br_overlaps = pathsOverlap(from_tr, to_tr, to_br);
 	var tr_to_bl_br_overlaps = pathsOverlap(from_tr, to_bl, to_br);
 	var tr_to_tl_bl_overlaps = pathsOverlap(from_tr, to_tl, to_bl);
-	if ((tr_to_tl && tr_to_tr && !tr_to_tl_tr_overlaps) ||
-		(tr_to_tr && tr_to_br && !tr_to_tr_br_overlaps) ||
-		(tr_to_bl && tr_to_br && !tr_to_bl_br_overlaps) ||
-		(tr_to_tl && tr_to_bl && !tr_to_tl_bl_overlaps)) {
-		//console.log('TR Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+	if ((tr_to_tl && tr_to_tr && tr_to_top && !tr_to_tl_tr_overlaps) ||
+		(tr_to_tr && tr_to_br && tr_to_right && !tr_to_tr_br_overlaps) ||
+		(tr_to_bl && tr_to_br && tr_to_bottom && !tr_to_bl_br_overlaps) ||
+		(tr_to_tl && tr_to_bl && tr_to_left && !tr_to_tl_bl_overlaps)) {
 		return true;
 	}
 
@@ -656,15 +666,18 @@ function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
 	var bl_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_tr);
 	var bl_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_br);
 	var bl_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bl);
+	var bl_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_top);
+	var bl_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_right);
+	var bl_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bottom);
+	var bl_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_left);
 	var bl_to_tl_tr_overlaps = pathsOverlap(from_bl, to_tl, to_tr);
 	var bl_to_tr_br_overlaps = pathsOverlap(from_bl, to_tr, to_br);
 	var bl_to_bl_br_overlaps = pathsOverlap(from_bl, to_bl, to_br);
 	var bl_to_tl_bl_overlaps = pathsOverlap(from_bl, to_tl, to_bl);
-	if ((bl_to_tl && bl_to_tr && !bl_to_tl_tr_overlaps) ||
-		(bl_to_tr && bl_to_br && !bl_to_tr_br_overlaps) ||
-		(bl_to_bl && bl_to_br && !bl_to_bl_br_overlaps) ||
-		(bl_to_tl && bl_to_bl && !bl_to_tl_bl_overlaps)) {
-		//console.log('BL Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+	if ((bl_to_tl && bl_to_tr && bl_to_top && !bl_to_tl_tr_overlaps) ||
+		(bl_to_tr && bl_to_br && bl_to_right && !bl_to_tr_br_overlaps) ||
+		(bl_to_bl && bl_to_br && bl_to_bottom && !bl_to_bl_br_overlaps) ||
+		(bl_to_tl && bl_to_bl && bl_to_left && !bl_to_tl_bl_overlaps)) {
 		return true;
 	}
 
@@ -672,19 +685,21 @@ function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
 	var br_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_tr);
 	var br_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_br);
 	var br_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bl);
+	var br_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_top);
+	var br_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_right);
+	var br_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bottom);
+	var br_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_left);
 	var br_to_tl_tr_overlaps = pathsOverlap(from_br, to_tl, to_tr);
 	var br_to_tr_br_overlaps = pathsOverlap(from_br, to_tr, to_br);
 	var br_to_bl_br_overlaps = pathsOverlap(from_br, to_bl, to_br);
 	var br_to_tl_bl_overlaps = pathsOverlap(from_br, to_tl, to_bl);
-	if ((br_to_tl && br_to_tr && !br_to_tl_tr_overlaps) ||
-	(br_to_tr && br_to_br && !br_to_tr_br_overlaps) ||
-	(br_to_bl && br_to_br && !br_to_bl_br_overlaps) ||
-	(br_to_tl && br_to_bl && !br_to_tl_bl_overlaps)) {
-		//console.log('BR Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
+	if ((br_to_tl && br_to_tr && br_to_top &&!br_to_tl_tr_overlaps) ||
+		(br_to_tr && br_to_br && br_to_right && !br_to_tr_br_overlaps) ||
+		(br_to_bl && br_to_br && br_to_bottom && !br_to_bl_br_overlaps) ||
+		(br_to_tl && br_to_bl && br_to_left && !br_to_tl_bl_overlaps)) {
 		return true;
 	}
 
-	console.log('NO Los from tile {' + fromTileX + ', ' + fromTileY + '} to tile {' + toTileX + ', ' + toTileY + '}');
 	return false;
 }
 
@@ -701,6 +716,10 @@ function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTil
 	var defender_tr = { x: toTileX + 1, y: toTileY };
 	var defender_bl = { x: toTileX, y: toTileY + 1 };
 	var defender_br = { x: toTileX + 1, y: toTileY + 1 };
+	var defender_top = { x: toTileX + 0.5, y: toTileY };
+	var defender_right = { x: toTileX + 1, y: toTileY + 0.5 };
+	var defender_bottom = { x: toTileX + 0.5, y: toTileY + 1 };
+	var defender_left = { x: toTileX, y: toTileY + 0.5 };
 	
 	var tl_to_tl_tr_overlaps = pathsOverlap(attacker_tl, defender_tl, defender_tr);
 	var tl_to_tr_br_overlaps = pathsOverlap(attacker_tl, defender_tr, defender_br);
@@ -723,58 +742,90 @@ function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTil
 	var tl_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_tr);
 	var tl_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_br);
 	var tl_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bl);
+	var tl_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_top);
+	var tl_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_right);
+	var tl_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bottom);
+	var tl_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_left);
+	var tl_to_tl_tr_enabled = tl_to_tl && tl_to_tr && tl_to_top && !tl_to_tl_tr_overlaps;
+	var tl_to_tr_br_enabled = tl_to_tr && tl_to_br && tl_to_right && !tl_to_tr_br_overlaps;
+	var tl_to_bl_br_enabled = tl_to_bl && tl_to_br && tl_to_bottom && !tl_to_bl_br_overlaps;
+	var tl_to_tl_bl_enabled = tl_to_tl && tl_to_bl && tl_to_left && !tl_to_tl_bl_overlaps;
 
 	var tr_to_tl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tl);
 	var tr_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tr);
 	var tr_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_br);
 	var tr_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bl);
+	var tr_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_top);
+	var tr_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_right);
+	var tr_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bottom);
+	var tr_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_left);
+	var tr_to_tl_tr_enabled = tr_to_tl && tr_to_tr && tr_to_top && !tr_to_tl_tr_overlaps;
+	var tr_to_tr_br_enabled = tr_to_tr && tr_to_br && tr_to_right && !tr_to_tr_br_overlaps;
+	var tr_to_bl_br_enabled = tr_to_bl && tr_to_br && tr_to_bottom && !tr_to_bl_br_overlaps;
+	var tr_to_tl_bl_enabled = tr_to_tl && tr_to_bl && tr_to_left && !tr_to_tl_bl_overlaps;
 
 	var bl_to_tl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tl);
 	var bl_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tr);
 	var bl_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_br);
 	var bl_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bl);
+	var bl_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_top);
+	var bl_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_right);
+	var bl_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bottom);
+	var bl_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_left);
+	var bl_to_tl_tr_enabled = bl_to_tl && bl_to_tr && bl_to_top && !bl_to_tl_tr_overlaps;
+	var bl_to_tr_br_enabled = bl_to_tr && bl_to_br && bl_to_right && !bl_to_tr_br_overlaps;
+	var bl_to_bl_br_enabled = bl_to_bl && bl_to_br && bl_to_bottom && !bl_to_bl_br_overlaps;
+	var bl_to_tl_bl_enabled = bl_to_tl && bl_to_bl && bl_to_left && !bl_to_tl_bl_overlaps;
 
 	var br_to_tl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tl);
 	var br_to_tr = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tr);
 	var br_to_br = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_br);
 	var br_to_bl = getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bl);
-	
+	var br_to_top = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_top);
+	var br_to_right = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_right);
+	var br_to_bottom = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bottom);
+	var br_to_left = getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_left);
+	var br_to_tl_tr_enabled = br_to_tl && br_to_tr && br_to_top && !br_to_tl_tr_overlaps;
+	var br_to_tr_br_enabled = br_to_tr && br_to_br && br_to_right && !br_to_tr_br_overlaps;
+	var br_to_bl_br_enabled = br_to_bl && br_to_br && br_to_bottom && !br_to_bl_br_overlaps;
+	var br_to_tl_bl_enabled = br_to_tl && br_to_bl && br_to_left && !br_to_tl_bl_overlaps;
+
 	updateLinesOfSight([
-		{ key: 'tl_to_tl_tr', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: (tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps) },
-		{ key: 'tl_to_tr_br', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (tl_to_tr && tl_to_br && !tl_to_tr_br_overlaps) },
-		{ key: 'tl_to_bl_br', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (tl_to_bl && tl_to_br && !tl_to_bl_br_overlaps) },
-		{ key: 'tl_to_tl_bl', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: (tl_to_tl && tl_to_bl && !tl_to_tl_bl_overlaps) },
-		{ key: 'tr_to_tl_tr', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: (tr_to_tl && tr_to_tr && !tr_to_tl_tr_overlaps) },
-		{ key: 'tr_to_tr_br', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (tr_to_tr && tr_to_br && !tr_to_tr_br_overlaps) },
-		{ key: 'tr_to_bl_br', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (tr_to_bl && tr_to_br && !tr_to_bl_br_overlaps) },
-		{ key: 'tr_to_tl_bl', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: (tr_to_tl && tr_to_bl && !tr_to_tl_bl_overlaps) },
-		{ key: 'bl_to_tl_tr', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: (bl_to_tl && bl_to_tr && !bl_to_tl_tr_overlaps) },
-		{ key: 'bl_to_tr_br', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (bl_to_tr && bl_to_br && !bl_to_tr_br_overlaps) },
-		{ key: 'bl_to_bl_br', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (bl_to_bl && bl_to_br && !bl_to_bl_br_overlaps) },
-		{ key: 'bl_to_tl_bl', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: (bl_to_tl && bl_to_bl && !bl_to_tl_bl_overlaps) },
-		{ key: 'br_to_tl_tr', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: (br_to_tl && br_to_tr && !br_to_tl_tr_overlaps) },
-		{ key: 'br_to_tr_br', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (br_to_tr && br_to_br && !br_to_tr_br_overlaps) },
-		{ key: 'br_to_bl_br', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: (br_to_bl && br_to_br && !br_to_bl_br_overlaps) },
-		{ key: 'br_to_tl_bl', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: (br_to_tl && br_to_bl && !br_to_tl_bl_overlaps) }
+		{ key: 'tl_to_tl_tr', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: tl_to_tl_tr_enabled },
+		{ key: 'tl_to_tr_br', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: tl_to_tr_br_enabled },
+		{ key: 'tl_to_bl_br', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: tl_to_bl_br_enabled },
+		{ key: 'tl_to_tl_bl', attacker: { x: attacker_tl.x, y: attacker_tl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: tl_to_tl_bl_enabled },
+		{ key: 'tr_to_tl_tr', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: tr_to_tl_tr_enabled },
+		{ key: 'tr_to_tr_br', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: tr_to_tr_br_enabled },
+		{ key: 'tr_to_bl_br', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: tr_to_bl_br_enabled },
+		{ key: 'tr_to_tl_bl', attacker: { x: attacker_tr.x, y: attacker_tr.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: tr_to_tl_bl_enabled },
+		{ key: 'bl_to_tl_tr', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: bl_to_tl_tr_enabled },
+		{ key: 'bl_to_tr_br', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: bl_to_tr_br_enabled },
+		{ key: 'bl_to_bl_br', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: bl_to_bl_br_enabled },
+		{ key: 'bl_to_tl_bl', attacker: { x: attacker_bl.x, y: attacker_bl.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: bl_to_tl_bl_enabled },
+		{ key: 'br_to_tl_tr', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_tr.x, y: defender_tr.y }, enabled: br_to_tl_tr_enabled },
+		{ key: 'br_to_tr_br', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tr.x, y: defender_tr.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: br_to_tr_br_enabled },
+		{ key: 'br_to_bl_br', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_bl.x, y: defender_bl.y }, defender2: { x: defender_br.x, y: defender_br.y }, enabled: br_to_bl_br_enabled },
+		{ key: 'br_to_tl_bl', attacker: { x: attacker_br.x, y: attacker_br.y }, defender1: { x: defender_tl.x, y: defender_tl.y }, defender2: { x: defender_bl.x, y: defender_bl.y }, enabled: br_to_tl_bl_enabled }
 	]);	
 
 	updateLinesOfSightDropdown([
-		{ value: 'tl_to_tl_tr', enabled: (tl_to_tl && tl_to_tr && !tl_to_tl_tr_overlaps) },
-		{ value: 'tl_to_tr_br', enabled: (tl_to_tr && tl_to_br && !tl_to_tr_br_overlaps) },
-		{ value: 'tl_to_bl_br', enabled: (tl_to_bl && tl_to_br && !tl_to_bl_br_overlaps) },
-		{ value: 'tl_to_tl_bl', enabled: (tl_to_tl && tl_to_bl && !tl_to_tl_bl_overlaps) },
-		{ value: 'tr_to_tl_tr', enabled: (tr_to_tl && tr_to_tr && !tr_to_tl_tr_overlaps) },
-		{ value: 'tr_to_tr_br', enabled: (tr_to_tr && tr_to_br && !tr_to_tr_br_overlaps) },
-		{ value: 'tr_to_bl_br', enabled: (tr_to_bl && tr_to_br && !tr_to_bl_br_overlaps) },
-		{ value: 'tr_to_tl_bl', enabled: (tr_to_tl && tr_to_bl && !tr_to_tl_bl_overlaps) },
-		{ value: 'bl_to_tl_tr', enabled: (bl_to_tl && bl_to_tr && !bl_to_tl_tr_overlaps) },
-		{ value: 'bl_to_tr_br', enabled: (bl_to_tr && bl_to_br && !bl_to_tr_br_overlaps) },
-		{ value: 'bl_to_bl_br', enabled: (bl_to_bl && bl_to_br && !bl_to_bl_br_overlaps) },
-		{ value: 'bl_to_tl_bl', enabled: (bl_to_tl && bl_to_bl && !bl_to_tl_bl_overlaps) },
-		{ value: 'br_to_tl_tr', enabled: (br_to_tl && br_to_tr && !br_to_tl_tr_overlaps) },
-		{ value: 'br_to_tr_br', enabled: (br_to_tr && br_to_br && !br_to_tr_br_overlaps) },
-		{ value: 'br_to_bl_br', enabled: (br_to_bl && br_to_br && !br_to_bl_br_overlaps) },
-		{ value: 'br_to_tl_bl', enabled: (br_to_tl && br_to_bl && !br_to_tl_bl_overlaps) }
+		{ value: 'tl_to_tl_tr', enabled: tl_to_tl_tr_enabled },
+		{ value: 'tl_to_tr_br', enabled: tl_to_tr_br_enabled },
+		{ value: 'tl_to_bl_br', enabled: tl_to_bl_br_enabled },
+		{ value: 'tl_to_tl_bl', enabled: tl_to_tl_bl_enabled },
+		{ value: 'tr_to_tl_tr', enabled: tr_to_tl_tr_enabled },
+		{ value: 'tr_to_tr_br', enabled: tr_to_tr_br_enabled },
+		{ value: 'tr_to_bl_br', enabled: tr_to_bl_br_enabled },
+		{ value: 'tr_to_tl_bl', enabled: tr_to_tl_bl_enabled },
+		{ value: 'bl_to_tl_tr', enabled: bl_to_tl_tr_enabled },
+		{ value: 'bl_to_tr_br', enabled: bl_to_tr_br_enabled },
+		{ value: 'bl_to_bl_br', enabled: bl_to_bl_br_enabled },
+		{ value: 'bl_to_tl_bl', enabled: bl_to_tl_bl_enabled },
+		{ value: 'br_to_tl_tr', enabled: br_to_tl_tr_enabled },
+		{ value: 'br_to_tr_br', enabled: br_to_tr_br_enabled },
+		{ value: 'br_to_bl_br', enabled: br_to_bl_br_enabled },
+		{ value: 'br_to_tl_bl', enabled: br_to_tl_bl_enabled }
 	]);
 }
 
@@ -831,11 +882,26 @@ function getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attack
 	return true;
 }
 
+function getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, fromPoint, toPoint) {
+	var pathBlocked = false;
+
+	var verticalEdges = getVerticalEdges(fromPoint.x, fromPoint.y, toPoint.x, toPoint.y);
+	pathBlocked = edgeBlocked(verticalEdges);
+	if (pathBlocked) { return false; }
+
+	var horizontalEdges = getHorizontalEdges(fromPoint.x, fromPoint.y, 
+		toPoint.x, toPoint.y);
+	pathBlocked = edgeBlocked(horizontalEdges);
+	if (pathBlocked) { return false; }
+
+	return true;
+}
+
 function getVerticalEdges(startX, startY, endX, endY) {
 	var deltaX = endX - startX;
 	var deltaY = endY - startY;
 	var xDirection = deltaX < 0 ? -1 : 1;
-	if (deltaX < 0) { deltaX = deltaX * -1; }
+	deltaX = Math.abs(deltaX);
 	var currentX = startX;
 	var step = 0
 	var verticalEdges = [];
@@ -855,7 +921,7 @@ function getVerticalEdges(startX, startY, endX, endY) {
 			]);
 		}
 	}
-	while (currentX != endX);
+	while (step < Math.floor(deltaX));
 	return verticalEdges;
 }
 
@@ -863,7 +929,7 @@ function getHorizontalEdges(startX, startY, endX, endY) {
 	var deltaX = endX - startX;
 	var deltaY = endY - startY;
 	var yDirection = deltaY < 0 ? -1 : 1;
-	if (deltaY < 0) { deltaY = deltaY * -1; }
+	deltaY = Math.abs(deltaY);
 	var currentY = startY;
 	var step = 0
 	var horizontalEdges = [];
@@ -883,7 +949,7 @@ function getHorizontalEdges(startX, startY, endX, endY) {
 			]);
 		}
 	}
-	while (currentY != endY);
+	while (step < Math.floor(deltaY));
 	return horizontalEdges;
 }
 
@@ -926,7 +992,7 @@ function getIntersections(startX, startY, endX, endY) {
 		if (intersectionIndex < 0) { intersections.push({ x: endX, y: endY }); }
 		return intersections;	
 	}
-	if (deltaX < 0) { deltaX = deltaX * -1; }
+	deltaX = Math.abs(deltaX);
 	do {
 		currentX += xDirection;
 		step++;
@@ -935,7 +1001,7 @@ function getIntersections(startX, startY, endX, endY) {
 			intersections.push({ x: currentX, y: y });
 		}
 	}
-	while (currentX != endX);
+	while (step < Math.floor(deltaX));
 	var intersectionIndex = intersections.findIndex(function(intersection) {
 		return intersection.x == startX && intersection.y == startY;
 	})
