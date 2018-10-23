@@ -48,6 +48,7 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Corellian_Underground',
 'Coruscant_Back_Alleys',
 'Coruscant_Landfill',
+'Coruscant_Senate_Office',
 'Lothal_Wastes'];
 var map_image_available = false;
 
