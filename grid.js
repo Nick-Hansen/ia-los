@@ -45,6 +45,7 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Bespin_Tibanna_Facility',
 'Chopper_Base_Atollon',
 'Climate_Research_Camp',
+'Corellian_Underground',
 'Coruscant_Back_Alleys',
 'Lothal_Wastes'];
 var map_image_available = false;
