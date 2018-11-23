@@ -9,3 +9,5 @@ The grid laid over the map and the lines on the grid are not pixel perfect.  The
 I hope this project helps Imperial Assault players, speeds up situations where its tough to tell how close a shot is, and enhances the game.
 
 I want to thank Nick (nickv2002) for granting permission to use the map images from the Imperial-Assault-Skirmish-Map-Project GitHub project.
+
+I also want to thank a1bert for granting permission to use the map images from Star Wars: Imperial Assault Vassal Module.
