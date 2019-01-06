@@ -913,11 +913,27 @@ function getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, fromPoin
 	var pathBlocked = false;
 
 	var verticalEdges = getVerticalEdges(fromPoint.x, fromPoint.y, toPoint.x, toPoint.y);
+	//remove ending edge
+	var finalEdgeIndex = verticalEdges.findIndex(function(edge) {
+		return edge[0].y == Math.floor(toPoint.y) && edge[0].x == toPoint.x
+			&& edge[1].y == Math.ceil(toPoint.y) && edge[1].x == toPoint.x;
+	});
+	if (finalEdgeIndex > -1) {
+		verticalEdges.splice(finalEdgeIndex, 1);
+	}
 	pathBlocked = edgeBlocked(verticalEdges);
 	if (pathBlocked) { return false; }
 
 	var horizontalEdges = getHorizontalEdges(fromPoint.x, fromPoint.y, 
 		toPoint.x, toPoint.y);
+	//remove ending edge
+	finalEdgeIndex = horizontalEdges.findIndex(function(edge) {
+		return edge[0].x == Math.floor(toPoint.x) && edge[0].y == toPoint.y
+			&& edge[1].x == Math.ceil(toPoint.x) && edge[1].y == toPoint.y;
+	});
+	if (finalEdgeIndex > -1) {
+		horizontalEdges.splice(finalEdgeIndex, 1);
+	}
 	pathBlocked = edgeBlocked(horizontalEdges);
 	if (pathBlocked) { return false; }
 
