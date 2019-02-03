@@ -98,6 +98,49 @@ function setCustomMapImage(map_image_url) {
 	custom_map_image.src = map_image_url;
 }
 
+function loadSerializedMap(load_map_filepath) {
+	$.getJSON(serialized_map_url)
+	.done(function( map ) {
+		attackingTile = { x: -1, y: -1};
+		defendingTile = { x: -1, y: -1};
+		blockers = [];
+		linesOfSight = {};
+
+		map_name == 'custom';
+		map_width = map.width;
+		map_height = map.height;
+		grid_width = map_width * boxWidth;
+		grid_height = map_height * boxWidth;
+		var max_width_height = map_width > map_height ? map_width : map_height;
+		horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+		vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+		canvas_width = max_width_height * boxWidth;
+		canvas_height = max_width_height * boxWidth;
+
+		offMapTiles = map.offMapTiles;
+		walls = map.walls;
+		blockingTiles = map.blockingTiles;
+		blockingEdges = map.blockingEdges;
+		blockingIntersections = map.blockingIntersections;
+
+		canvas.width = canvas_width;
+		canvas.height = canvas_height;
+		canvas.style.width = canvas_width + 'px';
+		canvas.style.height = canvas_height + 'px';
+		
+		$("#map_name").val(map.name);
+		$("#map_source").val(map.source);
+		$("#map_width")[0].selectedIndex = map_width - 1;
+		$("#map_height")[0].selectedIndex = map_height - 1;
+		
+		drawBoard();
+	})
+	.fail(function( jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+		console.log( "Request Failed: " + error );
+	});
+}
+
 function loadCustomMap() {
 	attackingTile = { x: -1, y: -1};
 	defendingTile = { x: -1, y: -1};
@@ -2143,4 +2186,9 @@ $(document).on('click', '[data-map-edit-add-map-image]', function() {
 	if (custom_map_image_url.length > 0) {
 		setCustomMapImage(custom_map_image_url);
 	}
+})
+
+$(document).on('click', '[data-map-edit-load-map]', function() {
+	var load_map_filepath = $('#load_map_filepath').val();
+	loadSerializedMap(load_map_filepath);
 })
