@@ -98,8 +98,9 @@ function setCustomMapImage(map_image_url) {
 	custom_map_image.src = map_image_url;
 }
 
-function loadSerializedMap(load_map_filepath) {
-	$.getJSON(serialized_map_url)
+function loadSerializedMap(mapName) {
+	//$.getJSON(serialized_map_url)
+	$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
 	.done(function( map ) {
 		attackingTile = { x: -1, y: -1};
 		defendingTile = { x: -1, y: -1};
