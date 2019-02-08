@@ -85,6 +85,8 @@ label[for="blocker"] img {
 	margin: 4px;
 }
 
+
+
 .instructions-attacker img, 
 .instructions-defender img, 
 .instructions-blocker img {
@@ -92,4 +94,16 @@ label[for="blocker"] img {
 	width:20px;
 	padding-top: 2px;
 	padding-left: 2px;
+}
+
+.rotate-map {
+	float: right;
+}
+
+.rotate-map-clockwise img,
+.rotate-map-counter-clockwise img {
+	height:30px;
+	width:30px;
+	padding-top: 2px;
+	padding-left: 12px;
 }

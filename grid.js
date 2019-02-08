@@ -21,7 +21,7 @@ var map_image_name = undefined;
 var attacker_image = new Image();
 var defender_image = new Image();
 var blocker_image = new Image();
-var rotate = 0 * Math.PI / 180.0;
+var rotate = 0;
 var attackingTile = { x: -1, y: -1};
 var defendingTile = { x: -1, y: -1};
 var blockers = [];
@@ -128,6 +128,115 @@ function loadMap(mapName) {
 	drawBoard();
 }
 
+function rotate_counter_clockwise() {
+	rotate = rotate > 0 ? (rotate - .5) % 2 : (2 - .5) % 2;
+
+	var previous_map_width = map_width;
+	map_width = map_height;
+	map_height = previous_map_width;
+	grid_width = map_width * boxWidth;
+	grid_height = map_height * boxWidth;
+	var max_width_height = map_width > map_height ? map_width : map_height;
+	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvas_width = max_width_height * boxWidth;
+	canvas_height = max_width_height * boxWidth;
+
+	var previous_attacker_y = attackingTile.y;
+	attackingTile.y = previous_map_width - attackingTile.x;
+	attackingTile.x = previous_attacker_y;
+	var previous_defender_y = defendingTile.y;
+	defendingTile.y = previous_map_width - defendingTile.x;
+	defendingTile.x = previous_defender_y;
+	//blockers = [];
+	//offMapTiles;
+	//walls;
+	//blockingTiles;
+	//blockingEdges;
+	//blockingIntersections;
+
+	canvas.width = canvas_width;
+	canvas.height = canvas_height;
+
+	drawBoard(function () {
+		calculateLoSFromAttackerToDefender();
+		drawLinesOfSight();
+	})
+}
+
+function rotate_clockwise() {
+	rotate = (rotate + .5) % 2;
+	
+	var previous_map_height = map_height;
+	map_height = map_width;
+	map_width = previous_map_height;
+	grid_width = map_width * boxWidth;
+	grid_height = map_height * boxWidth;
+	var max_width_height = map_width > map_height ? map_width : map_height;
+	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvas_width = max_width_height * boxWidth;
+	canvas_height = max_width_height * boxWidth;
+
+	var previous_attacker_x = attackingTile.x;
+	attackingTile.x = previous_map_height - attackingTile.y;
+	attackingTile.y = previous_attacker_x;
+	var previous_defender_x = defendingTile.x;
+	defendingTile.x = previous_map_height - defendingTile.y;
+	defendingTile.y = previous_defender_x;
+	blockers.forEach(function (blocker) {
+		var previous_blocker_x = blocker.x;
+		blocker.x = previous_map_height - blocker.y;
+		blocker.y = previous_blocker_x;
+	});
+	offMapTiles.forEach(function (offMapTile) {
+		var previous_tile_x = offMapTile.x;
+		offMapTile.x = previous_map_height - offMapTile.y;
+		offMapTile.y = previous_tile_x;
+	});
+	walls.forEach(function (wall) {
+		var previous_wall_x = wall[0].x;
+		wall[0].x = previous_map_height - wall[0].y;
+		wall[0].y = previous_wall_x;
+
+		previous_wall_x = wall[1].x;
+		wall[1].x = previous_map_height - wall[1].y;
+		wall[1].y = previous_wall_x;
+	});
+	blockingTiles.forEach(function (blockingTile) {
+		var previous_tile_x = blockingTile.x;
+		blockingTile.x = previous_map_height - blockingTile.y;
+		blockingTile.y = previous_tile_x;
+	});
+	blockingEdges.forEach(function (edge) {
+		var previous_edge_x = edge[0].x;
+		edge[0].x = previous_map_height - edge[0].y;
+		edge[0].y = previous_edge_x;
+
+		previous_edge_x = edge[1].x;
+		edge[1].x = previous_map_height - edge[1].y;
+		edge[1].y = previous_edge_x;
+	})
+	blockingIntersections.forEach(function (connection) {
+		var previous_connection_x = connection.x;
+		connection.x = previous_map_height - connection.y;
+		connection.y = previous_connection_x;
+		connection.connections.forEach(function (edge) {
+			var previous_edge_x = edge.x;
+			edge.x = previous_map_height - edge.y;
+			edge.y = previous_edge_x;
+		});
+	});
+
+	canvas.width = canvas_width;
+	canvas.height = canvas_height;
+
+	drawBoard(function () {
+		calculateLoSFromAttackerToDefender();
+		drawLinesOfSight();
+	})
+}
+
 function getMap(mapName) {
 	//$.getJSON('maps/' + mapName + '.json')
 	$.getJSON('https://nick-hansen.github.io/ia-los/maps/' + mapName + '.json')
@@ -173,47 +282,17 @@ function drawBoard(callback){
 	}
 }
 
-function rotate_counter_clockwise() {
-	rotate -= 90 * Math.PI / 180.0;
-	//drawBoard(function () {
-	//	calculateLoSFromAttackerToDefender();
-	//	drawLinesOfSight();
-	//})
-}
-
-function rotate_clockwise() {
-	rotate += 90 * Math.PI / 180.0;
-	//drawBoard(function () {
-	//	calculateLoSFromAttackerToDefender();
-	//	drawLinesOfSight();
-	//});
-}
-
-//function drawImage(rotation){
-//	context.setTransform(1, 0, 0, 1, 0, 0); // sets scale and origin
-//	context.rotate(rotation);
-//	//context.drawImage(image, -image.width / 2, -image.height / 2);
-//	context.drawImage(image, padding, padding, image.height, image.width, padding, padding, grid_width, grid_height);
-//} 
-//function drawImage(degrees){
-//  context.save();
-//  context.translate(canvas_width / 2, canvas_height / 2);
-//  context.rotate(degrees * Math.PI / 180.0);
-//  context.translate(-canvas_width / 2, -canvas_height / 2);
-//  context.drawImage(image, 0, 0, canvas_width, canvas_height);
-//  context.restore();
-//}
-
 function drawMap(callback) {
 	if (map_image_name == map_name) {
-		//context.save();
-		//context.translate(canvas.width/2,canvas.height/2);
-		//context.rotate(90 * Math.PI / 180);
-		//context.drawImage(image,-image.width/2,-image.width/2);
-		//context.drawImage(image,-image.width/2,-image.width/2, image.width, image.height);
-		//context.drawImage(image,0, 0, image.height, image.width, -image.width/2,-image.width/2, grid_height, grid_width);
-		//context.restore();
-		context.drawImage(map_image, 0, 0, map_image.width, map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+		context.save();
+		context.translate(canvas.width/2,canvas.height/2);
+		context.rotate(rotate * Math.PI);
+		var gridWidth = (rotate == 0 || rotate == 1) ? grid_width : grid_height;
+		var gridHeight = (rotate == 0 || rotate == 1) ? grid_height : grid_width;
+		var hPadding = (rotate == 0 || rotate == 1) ? horizontal_padding : vertical_padding;
+		var vPadding = (rotate == 0 || rotate == 1) ? vertical_padding : horizontal_padding;
+		context.drawImage(map_image, 0, 0, map_image.width, map_image.height,  (-canvas.width/2 + hPadding), (-canvas.height/2 + vPadding), gridWidth, gridHeight);
+		context.restore();
 		if (callback) { callback(); }
 	} else {
 		map_image_name = undefined;
@@ -253,18 +332,6 @@ function drawLOSTiles() {
 	attackerLOSTiles.forEach(drawAttackerLOSTile);
 	defenderLOSTiles.forEach(drawDefenderLOSTile);
 	mutualLOSTiles.forEach(drawMutualLOSTile)
-	//console.log('Attacker LOS Tiles');
-	//attackerLOSTiles.forEach(function (tile) {
-	//	console.log(JSON.stringify(tile));
-	//})
-	//console.log('Defender LOS Tiles');
-	//defenderLOSTiles.forEach(function (tile) {
-	//	console.log(JSON.stringify(tile));
-	//})
-	//console.log('Mutual LOS Tiles');
-	//mutualLOSTiles.forEach(function (tile) {
-	//	console.log(JSON.stringify(tile));
-	//})
 }
 
 function getTile(clientX, clientY, event) {
@@ -2015,11 +2082,11 @@ $(document).on('click', '#clearMap', function () {
 	});
 });
 
-$(document).on('click', '#rotate_counter_clockwise', function () {
+$(document).on('click', '.rotate-map-counter-clockwise', function () {
 	rotate_counter_clockwise();
 });
 
-$(document).on('click', '#rotate_clockwise', function () {
+$(document).on('click', '.rotate-map-clockwise', function () {
 	rotate_clockwise();
 });
 	
