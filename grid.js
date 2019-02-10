@@ -159,13 +159,30 @@ function rotate_counter_clockwise() {
 		offMapTile.x = previous_tile_y;
 	});
 	walls.forEach(function (wall) {
-		var previous_wall_y = wall[0].y;
-		wall[0].y = previous_map_width - wall[0].x;
-		wall[0].x = previous_wall_y;
-    
-		previous_wall_y = wall[1].y;
-		wall[1].y = previous_map_width - wall[1].x;
-		wall[1].x = previous_wall_y;
+		var previous_wall_y = -1;
+		if (wall[0].y != wall[1].y) {
+			previous_wall_y = wall[0].y;
+			wall[0].y = previous_map_width - wall[0].x;
+			wall[0].x = previous_wall_y;
+
+			previous_wall_y = wall[1].y;
+			wall[1].y = previous_map_width - wall[1].x;
+			wall[1].x = previous_wall_y;
+		} else {
+			//walls always run top to bottom, so we flip our 2 points
+			previous_wall_y = wall[0].y;
+			wall_0_y = previous_map_width - wall[0].x;
+			wall_0_x = previous_wall_y;
+
+			previous_wall_y = wall[1].y;
+			wall_1_y = previous_map_width - wall[1].x;
+			wall_1_x = previous_wall_y;
+
+			wall[0].y = wall_1_y;
+			wall[0].x = wall_1_x;
+			wall[1].y = wall_0_y;
+			wall[1].x = wall_0_x;
+		}
 	});
 	blockingTiles.forEach(function (blockingTile) {
 		var previous_tile_y = blockingTile.y;
@@ -173,17 +190,34 @@ function rotate_counter_clockwise() {
 		blockingTile.x = previous_tile_y;
 	});
 	blockingEdges.forEach(function (edge) {
-		var previous_edge_y = edge[0].y;
-		edge[0].y = previous_map_width - edge[0].x;
-		edge[0].x = previous_edge_y;
-    
-		previous_edge_y = edge[1].y;
-		edge[1].y = previous_map_width - edge[1].x;
-		edge[1].x = previous_edge_y;
+		var previous_edge_y = -1;
+		if (edge[0].y != edge[1].y) {
+			previous_edge_y = edge[0].y;
+			edge[0].y = previous_map_width - edge[0].x;
+			edge[0].x = previous_edge_y;
+	    
+			previous_edge_y = edge[1].y;
+			edge[1].y = previous_map_width - edge[1].x;
+			edge[1].x = previous_edge_y;
+		} else {
+			//edges always run top to bottom, so we flip our 2 points
+			previous_edge_y = edge[0].y;
+			edge_0_y = previous_map_width - edge[0].x;
+			edge_0_x = previous_edge_y;
+	    
+			previous_edge_y = edge[1].y;
+			edge_1_y = previous_map_width - edge[1].x;
+			edge_1_x = previous_edge_y;
+
+			edge[0].y = edge_1_y;
+			edge[0].x = edge_0_x;
+			edge[1].y = edge_0_y;
+			edge[1].x = edge_0_x;
+		}
 	})
 	blockingIntersections.forEach(function (connection) {
 		var previous_connection_y = connection.y;
-		connection.y = (previous_map_width - 1) - connection.x;
+		connection.y = previous_map_width - connection.x;
 		connection.x = previous_connection_y;
 		connection.connections.forEach(function (edge) {
 			var previous_edge_y = edge.y;
@@ -232,13 +266,30 @@ function rotate_clockwise() {
 		offMapTile.y = previous_tile_x;
 	});
 	walls.forEach(function (wall) {
-		var previous_wall_x = wall[0].x;
-		wall[0].x = previous_map_height - wall[0].y;
-		wall[0].y = previous_wall_x;
+		var previous_wall_x = -1;
+		if (wall[0].y == wall[1].y) {
+			previous_wall_x = wall[0].x;
+			wall[0].x = previous_map_height - wall[0].y;
+			wall[0].y = previous_wall_x;
 
-		previous_wall_x = wall[1].x;
-		wall[1].x = previous_map_height - wall[1].y;
-		wall[1].y = previous_wall_x;
+			previous_wall_x = wall[1].x;
+			wall[1].x = previous_map_height - wall[1].y;
+			wall[1].y = previous_wall_x;
+		} else {
+			//since walls always run left to right, we must flip our points
+			previous_wall_x = wall[0].x;
+			wall_0_x = previous_map_height - wall[0].y;
+			wall_0_y = previous_wall_x;
+
+			previous_wall_x = wall[1].x;
+			wall_1_x = previous_map_height - wall[1].y;
+			wall_1_y = previous_wall_x;
+
+			wall[0].x = wall_1_x;
+			wall[0].y = wall_1_y;
+			wall[1].x = wall_0_x;
+			wall[1].y = wall_0_y;
+		}
 	});
 	blockingTiles.forEach(function (blockingTile) {
 		var previous_tile_x = blockingTile.x;
@@ -246,17 +297,34 @@ function rotate_clockwise() {
 		blockingTile.y = previous_tile_x;
 	});
 	blockingEdges.forEach(function (edge) {
-		var previous_edge_x = edge[0].x;
-		edge[0].x = previous_map_height - edge[0].y;
-		edge[0].y = previous_edge_x;
+		var previous_edge_x = -1;
+		if (edge[0].y == edge[1].y) {
+			previous_edge_x = edge[0].x;
+			edge[0].x = previous_map_height - edge[0].y;
+			edge[0].y = previous_edge_x;
 
-		previous_edge_x = edge[1].x;
-		edge[1].x = previous_map_height - edge[1].y;
-		edge[1].y = previous_edge_x;
+			previous_edge_x = edge[1].x;
+			edge[1].x = previous_map_height - edge[1].y;
+			edge[1].y = previous_edge_x;
+		} else {
+			//since edges always run left to right, we must flip our points
+			previous_edge_x = edge[0].x;
+			edge_0_x = previous_map_height - edge[0].y;
+			edge_0_y = previous_edge_x;
+
+			previous_edge_x = edge[1].x;
+			edge_1_x = previous_map_height - edge[1].y;
+			edge_1_y = previous_edge_x;
+
+			edge[0].x = edge_1_x;
+			edge[0].y = edge_1_y;
+			edge[1].x = edge_0_x;
+			edge[1].y = edge_0_y;
+		}
 	})
 	blockingIntersections.forEach(function (connection) {
 		var previous_connection_x = connection.x;
-		connection.x = (previous_map_height - 1) - connection.y;
+		connection.x = previous_map_height - connection.y;
 		connection.y = previous_connection_x;
 		connection.connections.forEach(function (edge) {
 			var previous_edge_x = edge.x;
