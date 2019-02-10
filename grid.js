@@ -92,6 +92,7 @@ function clearMap(callback) {
 
 function loadMap(mapName) {
 	clearMap();
+	rotate = 0;
 
 	var map = ia_los_maps[mapName];
 
