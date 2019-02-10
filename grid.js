@@ -229,10 +229,14 @@ function rotate_counter_clockwise() {
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
 
-	drawBoard(function () {
-		calculateLoSFromAttackerToDefender();
-		drawLinesOfSight();
-	})
+	var highlightAttackerLoS = $('#highlightAttackerLoS').is(":checked");
+	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
+	calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
+		drawBoard(function () {
+			calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
+			drawLinesOfSight();
+		});
+	});
 }
 
 function rotate_clockwise() {
@@ -336,11 +340,14 @@ function rotate_clockwise() {
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
 
-	drawBoard(function () {
-		calculateLoSFromAttackerToDefender();
-		drawLinesOfSight();
-	})
-
+	var highlightAttackerLoS = $('#highlightAttackerLoS').is(":checked");
+	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
+	calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
+		drawBoard(function () {
+			calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
+			drawLinesOfSight();
+		});
+	});
 }
 
 function getMap(mapName) {
