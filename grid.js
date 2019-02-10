@@ -129,7 +129,7 @@ function loadMap(mapName) {
 }
 
 function rotate_counter_clockwise() {
-	rotate = rotate > 0 ? (rotate - .5) % 2 : (2 - .5) % 2;
+	rotate = rotate == 0 ? 1.5 : (rotate - .5) % 2;
 
 	var previous_map_width = map_width;
 	map_width = map_height;
@@ -143,17 +143,54 @@ function rotate_counter_clockwise() {
 	canvas_height = max_width_height * boxWidth;
 
 	var previous_attacker_y = attackingTile.y;
-	attackingTile.y = previous_map_width - attackingTile.x;
+	attackingTile.y = (previous_map_width - 1) - attackingTile.x;
 	attackingTile.x = previous_attacker_y;
 	var previous_defender_y = defendingTile.y;
-	defendingTile.y = previous_map_width - defendingTile.x;
+	defendingTile.y = (previous_map_width - 1) - defendingTile.x;
 	defendingTile.x = previous_defender_y;
-	//blockers = [];
-	//offMapTiles;
-	//walls;
-	//blockingTiles;
-	//blockingEdges;
-	//blockingIntersections;
+	blockers.forEach(function (blocker) {
+		var previous_blocker_y = blocker.y;
+		blocker.y = (previous_map_width - 1) - blocker.x;
+		blocker.x = previous_blocker_y;
+	});
+	offMapTiles.forEach(function (offMapTile) {
+		var previous_tile_y = offMapTile.y;
+		offMapTile.y = (previous_map_width - 1) - offMapTile.x;
+		offMapTile.x = previous_tile_y;
+	});
+	walls.forEach(function (wall) {
+		var previous_wall_y = wall[0].y;
+		wall[0].y = previous_map_width - wall[0].x;
+		wall[0].x = previous_wall_y;
+    
+		previous_wall_y = wall[1].y;
+		wall[1].y = previous_map_width - wall[1].x;
+		wall[1].x = previous_wall_y;
+	});
+	blockingTiles.forEach(function (blockingTile) {
+		var previous_tile_y = blockingTile.y;
+		blockingTile.y = (previous_map_width - 1) - blockingTile.x;
+		blockingTile.x = previous_tile_y;
+	});
+	blockingEdges.forEach(function (edge) {
+		var previous_edge_y = edge[0].y;
+		edge[0].y = previous_map_width - edge[0].x;
+		edge[0].x = previous_edge_y;
+    
+		previous_edge_y = edge[1].y;
+		edge[1].y = previous_map_width - edge[1].x;
+		edge[1].x = previous_edge_y;
+	})
+	blockingIntersections.forEach(function (connection) {
+		var previous_connection_y = connection.y;
+		connection.y = (previous_map_width - 1) - connection.x;
+		connection.x = previous_connection_y;
+		connection.connections.forEach(function (edge) {
+			var previous_edge_y = edge.y;
+			edge.y = previous_map_width - edge.x;
+			edge.x = previous_edge_y;
+		});
+	});
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -179,19 +216,19 @@ function rotate_clockwise() {
 	canvas_height = max_width_height * boxWidth;
 
 	var previous_attacker_x = attackingTile.x;
-	attackingTile.x = previous_map_height - attackingTile.y;
+	attackingTile.x = (previous_map_height - 1) - attackingTile.y;
 	attackingTile.y = previous_attacker_x;
 	var previous_defender_x = defendingTile.x;
-	defendingTile.x = previous_map_height - defendingTile.y;
+	defendingTile.x = (previous_map_height - 1) - defendingTile.y;
 	defendingTile.y = previous_defender_x;
 	blockers.forEach(function (blocker) {
 		var previous_blocker_x = blocker.x;
-		blocker.x = previous_map_height - blocker.y;
+		blocker.x = (previous_map_height - 1) - blocker.y;
 		blocker.y = previous_blocker_x;
 	});
 	offMapTiles.forEach(function (offMapTile) {
 		var previous_tile_x = offMapTile.x;
-		offMapTile.x = previous_map_height - offMapTile.y;
+		offMapTile.x = (previous_map_height - 1) - offMapTile.y;
 		offMapTile.y = previous_tile_x;
 	});
 	walls.forEach(function (wall) {
@@ -205,7 +242,7 @@ function rotate_clockwise() {
 	});
 	blockingTiles.forEach(function (blockingTile) {
 		var previous_tile_x = blockingTile.x;
-		blockingTile.x = previous_map_height - blockingTile.y;
+		blockingTile.x = (previous_map_height - 1) - blockingTile.y;
 		blockingTile.y = previous_tile_x;
 	});
 	blockingEdges.forEach(function (edge) {
@@ -219,7 +256,7 @@ function rotate_clockwise() {
 	})
 	blockingIntersections.forEach(function (connection) {
 		var previous_connection_x = connection.x;
-		connection.x = previous_map_height - connection.y;
+		connection.x = (previous_map_height - 1) - connection.y;
 		connection.y = previous_connection_x;
 		connection.connections.forEach(function (edge) {
 			var previous_edge_x = edge.x;
@@ -235,6 +272,7 @@ function rotate_clockwise() {
 		calculateLoSFromAttackerToDefender();
 		drawLinesOfSight();
 	})
+
 }
 
 function getMap(mapName) {
