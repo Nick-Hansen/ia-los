@@ -479,6 +479,9 @@ function selectTile(clientX, clientY, target) {
 		attackingTile = { x: xCoord, y: yCoord };
 	} else if (target == 'defender') {
 		defendingTile = { x: xCoord, y: yCoord };
+	} else if (target == 'attacker_defender') {
+		attackingTile = { x: xCoord, y: yCoord };
+		defendingTile = { x: xCoord, y: yCoord };
 	} else {
 		var blockerIndex = blockers.findIndex(function(tile) {
 			return tile.x == xCoord && tile.y == yCoord;
