@@ -2171,6 +2171,13 @@ function boardClick(event) {
 	}
 }
 
+$(document).on('change', 'input[type=radio][name=target]', function(event) {
+	var target = $(event.target).val();
+	if (target == 'attacker_defender') {
+		$('#highlightAttackerLoS').prop('checked', true);
+		$('#highlightDefenderLoS').prop('checked', true);
+	}
+})
 
 $(document).on('change', 'input[type=radio][name=gridDisplay]', function() {
 	drawBoard(function () {
