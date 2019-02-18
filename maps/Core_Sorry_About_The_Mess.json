@@ -4,7 +4,7 @@
     "source":"Core Campaign",
     "width":16,
     "height":11,
-    "spireTiles":[],
+    "spireTiles": [],
     "walls":[
         [
             {

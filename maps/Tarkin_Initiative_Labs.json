@@ -4,7 +4,7 @@
 	"source": "BT-1 and 0-0-0 Villain Pack",
 	"width": 17,
 	"height": 18,
-    "spireTiles":[],
+    "spireTiles": [],
 	"walls": [
 		[ { "x": 4, "y": 1 }, { "x": 4, "y": 2 } ],
 		[ { "x": 13, "y": 1 }, { "x": 13, "y": 2 } ],

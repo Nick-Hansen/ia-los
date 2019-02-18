@@ -4,7 +4,7 @@
 	"source": "Jawa Scavenger Villain Pack",
 	"width": 16,
 	"height": 19,
-    "spireTiles":[],
+    "spireTiles": [],
 	"walls": [
 		[ { "x": 10, "y": 1 }, { "x": 10, "y": 2 } ],
 		[ { "x": 5, "y": 5 }, { "x": 6, "y": 5 } ]
