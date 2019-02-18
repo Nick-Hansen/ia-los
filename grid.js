@@ -450,7 +450,7 @@ function drawGrid(){
 	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
 	blockingEdges.forEach(drawBlockingEdge);
-	spireTiles.forEach(drawSpireTile);
+	//spireTiles.forEach(drawSpireTile);
 	//blockingIntersections.forEach(drawBlockingIntersection);
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 }
@@ -525,7 +525,7 @@ function drawBlockingTile(tile) {
 function drawSpireTile(tile) {
 	var xCoord = (tile.x * boxWidth) + horizontal_padding;
 	var yCoord = (tile.y * boxWidth) + vertical_padding;
-	context.fillStyle = 'rgba(200, 200, 200, 0.5)';
+	context.fillStyle = 'rgba(300, 300, 300, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
@@ -1104,7 +1104,11 @@ function getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attack
 	var tiles = getTiles(verticalEdges, horizontalEdges, intersections,
 		fromTileX, fromTileY, toTileX, toTileY,
 		attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
-	pathBlocked = tileBlocked(tiles);
+	var targetSpire = spireTiles.find(function(spire_Tile) {
+		return (spire_Tile.x == toTileX && spire_Tile.y == toTileY) ||
+		(spire_Tile.x == fromTileX && spire_Tile.y == fromTileY);
+	});
+	pathBlocked = tileBlocked(tiles, targetSpire);
 	if (pathBlocked) { return false; }
 
 	pathBlocked = adjacentTilesBlocked(fromTileX, fromTileY, toTileX, toTileY, attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
@@ -1468,7 +1472,7 @@ function edgeBlocked(pathEdges) {
 	return pathBlocked;
 }
 
-function tileBlocked(pathTiles) {
+function tileBlocked(pathTiles, spireTile) {
 	var pathBlocked = false;
 
 	pathTiles.forEach(function(pathTile) {
@@ -1481,9 +1485,19 @@ function tileBlocked(pathTiles) {
 	
 	if (pathBlocked) { return true; }
 
+	var blocking_Tiles = blockingTiles.filter(function (blocking_Tile) { return true; });
+	if (spireTile) {
+		blocking_Tiles = blockingTiles.filter(function(blocking_Tile) {
+			return !((blocking_Tile.x == spireTile.x && blocking_Tile.y == spireTile.y -1) ||
+			(blocking_Tile.x == spireTile.x && blocking_Tile.y == spireTile.y +1) ||
+			(blocking_Tile.y == spireTile.y && blocking_Tile.x == spireTile.x -1) ||
+			(blocking_Tile.y == spireTile.y && blocking_Tile.x == spireTile.x +1));
+		});
+	}
+
 	pathTiles.forEach(function(pathTile) {
 		if (pathBlocked) { return; }
-		var tileIndex = blockingTiles.findIndex(function(blocking_tile) {
+		var tileIndex = blocking_Tiles.findIndex(function(blocking_tile) {
 			return blocking_tile.x == pathTile.x && blocking_tile.y == pathTile.y;
 		})
 		pathBlocked = tileIndex > -1;
