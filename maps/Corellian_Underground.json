@@ -4,6 +4,7 @@
     "source":"Han Solo Ally Pack",
     "width":16,
     "height":17,
+    "spireTiles":[],
     "walls":[
         [
             {

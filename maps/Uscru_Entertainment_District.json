@@ -4,6 +4,7 @@
 	"source": "Ahsoka Tano, Rebel Instigator Ally Pack",
 	"width": 15,
 	"height": 22,
+	"spireTiles": [],
 	"walls": [
 		[ { "x": 10, "y": 3 }, { "x": 10, "y": 4 } ],
 		[ { "x": 9, "y": 6 }, { "x": 9, "y": 7 } ],

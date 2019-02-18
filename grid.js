@@ -36,6 +36,7 @@ var blockingIntersections = [];
 var attackerLOSTiles = [];
 var defenderLOSTiles = [];
 var mutualLOSTiles = [];
+var spireTiles = [];
 
 var map_images = ['Mos_Eisley_Back_Alleys',
 'Tarkin_Initiative_Labs',
@@ -112,6 +113,7 @@ function loadMap(mapName) {
 	blockingTiles = map.blockingTiles;
 	blockingEdges = map.blockingEdges;
 	blockingIntersections = map.blockingIntersections;
+	spireTiles = map.spireTiles;
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -226,6 +228,11 @@ function rotate_counter_clockwise() {
 			edge.x = previous_edge_y;
 		});
 	});
+	spireTiles.forEach(function (spireTile) {
+		var previous_tile_y = spireTile.y;
+		spireTile.y = (previous_map_width - 1) - spireTile.x;
+		spireTile.x = previous_tile_y;
+	});
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -337,6 +344,11 @@ function rotate_clockwise() {
 			edge.y = previous_edge_x;
 		});
 	});
+	spireTiles.forEach(function (spireTile) {
+		var previous_tile_x = spireTile.x;
+		spireTile.x = (previous_map_height - 1) - spireTile.y;
+		spireTile.y = previous_tile_x;
+	});
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -438,6 +450,7 @@ function drawGrid(){
 	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
 	blockingEdges.forEach(drawBlockingEdge);
+	spireTiles.forEach(drawSpireTile);
 	//blockingIntersections.forEach(drawBlockingIntersection);
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 }
@@ -506,6 +519,13 @@ function drawBlockingTile(tile) {
 	var xCoord = (tile.x * boxWidth) + horizontal_padding;
 	var yCoord = (tile.y * boxWidth) + vertical_padding;
 	context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
+}
+
+function drawSpireTile(tile) {
+	var xCoord = (tile.x * boxWidth) + horizontal_padding;
+	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	context.fillStyle = 'rgba(200, 200, 200, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
