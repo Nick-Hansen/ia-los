@@ -4,6 +4,7 @@
     "source":"Heart of the Empire",
     "width":17,
     "height":21,
+    "spireTiles":[],
     "walls":[  
         [  
             {  

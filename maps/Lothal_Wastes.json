@@ -4,6 +4,9 @@
     "source":"Tyrants of Lothal",
     "width":19,
     "height":22,
+    "spireTiles":[
+        { "x": 16, "y": 10 }
+    ],
     "walls":[
         [
             {
