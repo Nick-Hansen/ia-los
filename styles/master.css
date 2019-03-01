@@ -31,7 +31,8 @@ input[type="radio"].image-radio {
 	margin: 0;
 }
 
-label[for="attacker"], label[for="defender"],label[for="blocker"] {
+label[for="attacker"], label[for="defender"],
+label[for="attacker_defender"], label[for="blocker"] {
 	display: inline-block;
 	background-color: white;
 	border: 2px solid black;
@@ -43,12 +44,14 @@ label[for="attacker"], label[for="defender"],label[for="blocker"] {
 
 input[type="radio"]:checked+label[for="attacker"], 
 input[type="radio"]:checked+label[for="defender"],
+input[type="radio"]:checked+label[for="attacker_defender"],
 input[type="radio"]:checked+label[for="blocker"] {
 	box-shadow: 0 0 5px 5px blue;
 }
 
 label[for="attacker"] img, 
 label[for="defender"] img, 
+label[for="attacker_defender"] img, 
 label[for="blocker"] img {
 	height:36px;
 	width:36px;
@@ -56,7 +59,27 @@ label[for="blocker"] img {
 	padding-left: 3px;
 }
 
-.instructions-attacker, .instructions-defender, .instructions-blocker {
+.key-color {
+	height:16px;
+	width:16px;
+	padding-left: 16px;
+	margin-right: 6px;
+}
+
+.AttackerLoS {
+	background-color: rgba(255, 255, 0, 0.5);
+}
+
+.DefenderLoS {
+	background-color: rgba(0, 191, 255, 0.5);
+}
+
+.MutualLoS {
+	background-color: rgba(0, 255, 0, 0.5);
+}
+
+.instructions-attacker, .instructions-defender, 
+.instructions-attacker-defender, .instructions-blocker {
 	display: inline-block;
 	background-color: white;
 	border: 2px solid black;
@@ -66,11 +89,26 @@ label[for="blocker"] img {
 	margin: 4px;
 }
 
+
+
 .instructions-attacker img, 
 .instructions-defender img, 
+.instructions-attacker-defender img, 
 .instructions-blocker img {
 	height:20px;
 	width:20px;
 	padding-top: 2px;
 	padding-left: 2px;
+}
+
+.rotate-map {
+	float: right;
+}
+
+.rotate-map-clockwise img,
+.rotate-map-counter-clockwise img {
+	height:30px;
+	width:30px;
+	padding-top: 2px;
+	padding-left: 12px;
 }

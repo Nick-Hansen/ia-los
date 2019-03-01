@@ -13,9 +13,54 @@
         <div style="margin-top: 10px; margin-bottom: 5px;">
           <label>Selected Map: </label>
           <select id="selected_map">
-            <option value="Mos_Eisley_Back_Alleys" selected="true">Mos Eisley Back Alleys</option>
-            <option value="Tarkin_Initiative_Labs">Tarkin Initiative Labs</option>
-            <option value="Uscru_Entertainment_District">Uscru Entertainment District</option>
+            <optgroup label="Current Skirmish Maps">
+              <option value="Uscru_Entertainment_District" selected="true">Uscru Entertainment District</option>
+              <option value="Tarkin_Initiative_Labs">Tarkin Initiative Labs</option>
+              <option value="Lothal_Wastes">Lothal Wastes</option>
+              <option value="Mos_Eisley_Back_Alleys">Mos Eisley Back Alleys</option>
+            </optgroup>
+            <optgroup label="Possible Skirmish Map Rotation">
+              <option value="Coruscant_Back_Alleys">Coruscant Back Alleys</option>
+            </optgroup>
+            <optgroup label="Core Campaign">
+              <option value="Core_A_Simple_Task">A Simple Task</option>
+              <option value="Core_A_New_Threat">A New Threat</option>
+              <option value="Core_Aftermath">Aftermath</option>
+              <option value="Core_Brushfire">Brushfire</option>
+              <option value="Core_Captured">Captured</option>
+              <option value="Core_Chain_Of_Command">Chain Of Command</option>
+              <option value="Core_Desperate_Hour">Desperate Hour</option>
+              <option value="Core_Drawn_In">Drawn In</option>
+              <option value="Core_Fly_Solo">Fly Solo</option>
+              <option value="Core_Friends_Of_Old">Friends of Old</option>
+              <option value="Core_Generous_Donations">Generous Donations</option>
+              <option value="Core_High_Moon">High Moon</option>
+              <option value="Core_Homecoming">Homecoming</option>
+              <option value="Core_Imperial_Hospitality">Imperial Hospitality</option>
+              <option value="Core_Incoming">Incoming</option>
+              <option value="Core_Indebted">Indebted</option>
+              <option value="Core_Last_Stand">Last Stand</option>
+              <option value="Core_Loose_Cannon">Loose Cannon</option>
+              <option value="Core_Luxury_Cruise">Luxury Cruise</option>
+              <option value="Core_Sorry_About_The_Mess">Sorry About the Mess</option>
+              <option value="Core_Target_Of_Opportunity">Target of Opportunity</option>
+              <option value="Core_Temptation">Temptation</option>
+              <option value="Core_The_Source">The Source</option>
+              <option value="Core_The_Spice_Job">The Spice Job</option>
+              <option value="Core_Under_Siege">Under Siege</option>
+              <option value="Core_Vipers_Den">Viper's Den</option>
+            </optgroup>
+            <optgroup label="Skirmish Maps">
+              <option value="30th_Floor_Plaza">30th Floor Plaza</option>
+              <option value="Anchorhead_Cantina">Anchorhead Cantina</option>
+              <option value="Bespin_Tibanna_Facility">Bespin Tibanna Facility</option>
+              <option value="Chopper_Base_Atollon">Chopper Base Atollon</option>
+              <option value="Climate_Research_Camp">Climate Research Camp</option>
+              <option value="Corellian_Underground">Corellian Underground</option>
+              <option value="Coruscant_Landfill">Coruscant Landfill</option>
+              <option value="Coruscant_Senate_Office">Coruscant Senate Office</option>
+              <option value="Development_Facility">Development Facility</option>
+            </optgroup>
           </select>
         </div>
         <div style="margin-top: 5px; margin-bottom: 10px;">
@@ -31,8 +76,10 @@
             <input type="radio" name="gridDisplay" value="both">
             <span>Both</span>
           </label>
-          <!--<a href="javascript:void(0)" id="rotate_counter_clockwise">left</a>
-          <a href="javascript:void(0)" id="rotate_clockwise">right</a>-->
+          <span class="rotate-map">
+            <span class="rotate-map-counter-clockwise"><img src="images/rotate_left.png"></span>
+            <span class="rotate-map-clockwise"><img src="images/rotate_right.png"></span>
+          </span>
         </div>
         <canvas id="canvas" width="400" height="300">
           Your browser does not support the HTML5 canvas tag.
@@ -42,10 +89,30 @@
         <div style="margin-bottom: 5px;">
           <input type="radio" name="target" value="attacker" checked="checked" id="attacker" class="image-radio">
           <label for="attacker"><img src="images/attacker.png"></label>
+          <label><span>Attacker</span></label>
           <input type="radio" name="target" value="defender" id="defender" class="image-radio">
           <label for="defender"><img src="images/defender.png"></label>
+          <label><span>Defender</span></label>
+          <input type="radio" name="target" value="attacker_defender" id="attacker_defender" class="image-radio">
+          <label for="attacker_defender"><img src="images/attacker_defender.png"></label>
+          <label><span>Atacker and Defender</span></label>
           <input type="radio" name="target" value="blocker" id="blocker" class="image-radio">
           <label for="blocker"><img src="images/blocker.png"></label>
+          <label><span>Blocking Model</span></label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <button type="button" id="clearMap">Clear Map</button>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <input type="checkbox" id="highlightAttackerLoS" />
+          <label for="highlightAttackerLoS"><span class="key-color AttackerLoS"></span>Highlight spaces to which Attacker has LoS</label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <input type="checkbox" id="highlightDefenderLoS" />
+          <label for="highlightDefenderLoS"><span class="key-color DefenderLoS"></span>Highlight spaces which have LoS to Defender</label>
+        </div>
+        <div style="margin-top: 5px; margin-bottom: 5px;">
+          <span class="key-color MutualLoS"></span><label>Spaces to which Attacker has LoS and have LoS to Defender</label>
         </div>
         <div style="margin-top: 5px; margin-bottom: 5px;">
           <label>Attacker Line of Sight: </label>

@@ -4,6 +4,7 @@
 	"source": "Ahsoka Tano, Rebel Instigator Ally Pack",
 	"width": 15,
 	"height": 22,
+	"spireTiles": [],
 	"walls": [
 		[ { "x": 10, "y": 3 }, { "x": 10, "y": 4 } ],
 		[ { "x": 9, "y": 6 }, { "x": 9, "y": 7 } ],
@@ -120,6 +121,11 @@
 			{ "x": 8, "y": 14 },
 			{ "x": 9, "y": 15 },
 			{ "x": 8, "y": 16 }
+		]},
+		{ "x": 3, "y": 17, "connections": [
+			{ "x": 3, "y": 16 },
+			{ "x": 2, "y": 17 },
+			{ "x": 3, "y": 18 }
 		]}
 	],
 	"offMapTiles": [
