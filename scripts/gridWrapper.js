@@ -12,7 +12,6 @@ var gridWrapper = function() {
     //public functions
     gridWrapper.init = function (options) {
         //clear state and set variables
-        alert('gridWrapper.init');
     };
 
     gridWrapper.doSomething = function() {
