@@ -1,4 +1,4 @@
-var gridWrapper = (function() {
+var gridWrapper = function() {
     'user strict';
     
     //private variables
@@ -12,6 +12,7 @@ var gridWrapper = (function() {
     //public functions
     gridWrapper.init = function (options) {
         //clear state and set variables
+        alert('gridWrapper.init');
     };
 
     gridWrapper.doSomething = function() {
@@ -20,4 +21,4 @@ var gridWrapper = (function() {
     
     //return public APIs
     return gridWrapper;
-})();
+};

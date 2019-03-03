@@ -1,3 +1,4 @@
-alert('ia-los');
-
-var ia_los = 'ia-los';
+var cavnas = canvasWrapper();
+cavnas.init();
+var grid = gridWrapper();
+grid.init();

@@ -1,4 +1,4 @@
-var canvasWrapper = (function() {
+var canvasWrapper = function() {
     'user strict';
     
     //private variables
@@ -12,6 +12,7 @@ var canvasWrapper = (function() {
     //public functions
     canvasWrapper.init = function (options) {
         //clear state and set variables
+        alert('canvasWrapper.init');
     };
 
     canvasWrapper.doSomething = function() {
@@ -20,4 +21,4 @@ var canvasWrapper = (function() {
     
     //return public APIs
     return canvasWrapper;
-})();
+};
