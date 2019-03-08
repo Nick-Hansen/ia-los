@@ -4,15 +4,15 @@ var map_width = 0;
 var map_height = 0;
 var boxWidth = 30;
 // Padding
-var horizontal_padding = 0;
-var vertical_padding = 0;
+var horizontalPadding = 0;
+var verticalPadding = 0;
 //space taken by grid (does not include padding)
-var grid_width = 0;
-var grid_height = 0;
+var gridWidth = 0;
+var gridHeight = 0;
 //horizontal space taken by canvas (includes padding)
-var canvas_width = 0;
+var canvasWidth = 0;
 //vertical space taken by canvas (includes padding)
-var canvas_height = 0;
+var canvasHeight = 0;
 
 var canvas = {};
 var context = {};
@@ -100,13 +100,13 @@ function loadMap(mapName) {
 	map_name = map.name;
 	map_width = map.width;
 	map_height = map.height;
-	grid_width = map_width * boxWidth;
-	grid_height = map_height * boxWidth;
+	gridWidth = map_width * boxWidth;
+	gridHeight = map_height * boxWidth;
 	var max_width_height = map_width > map_height ? map_width : map_height;
-	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
-	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
-	canvas_width = max_width_height * boxWidth;
-	canvas_height = max_width_height * boxWidth;
+	horizontalPadding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	verticalPadding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvasWidth = max_width_height * boxWidth;
+	canvasHeight = max_width_height * boxWidth;
 
 	offMapTiles = map.offMapTiles;
 	walls = map.walls;
@@ -115,8 +115,8 @@ function loadMap(mapName) {
 	blockingIntersections = map.blockingIntersections;
 	spireTiles = map.spireTiles;
 
-	canvas.width = canvas_width;
-	canvas.height = canvas_height;
+	canvas.width = canvasWidth;
+	canvas.height = canvasHeight;
 
 	map_image_available = map_images.indexOf(mapName) > -1;
 	if (map_image_available == true) {
@@ -137,13 +137,13 @@ function rotate_counter_clockwise() {
 	var previous_map_width = map_width;
 	map_width = map_height;
 	map_height = previous_map_width;
-	grid_width = map_width * boxWidth;
-	grid_height = map_height * boxWidth;
+	gridWidth = map_width * boxWidth;
+	gridHeight = map_height * boxWidth;
 	var max_width_height = map_width > map_height ? map_width : map_height;
-	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
-	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
-	canvas_width = max_width_height * boxWidth;
-	canvas_height = max_width_height * boxWidth;
+	horizontalPadding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	verticalPadding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvasWidth = max_width_height * boxWidth;
+	canvasHeight = max_width_height * boxWidth;
 
 	var previous_attacker_y = attackingTile.y;
 	attackingTile.y = (previous_map_width - 1) - attackingTile.x;
@@ -234,8 +234,8 @@ function rotate_counter_clockwise() {
 		spireTile.x = previous_tile_y;
 	});
 
-	canvas.width = canvas_width;
-	canvas.height = canvas_height;
+	canvas.width = canvasWidth;
+	canvas.height = canvasHeight;
 
 	var highlightAttackerLoS = $('#highlightAttackerLoS').is(":checked");
 	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
@@ -253,13 +253,13 @@ function rotate_clockwise() {
 	var previous_map_height = map_height;
 	map_height = map_width;
 	map_width = previous_map_height;
-	grid_width = map_width * boxWidth;
-	grid_height = map_height * boxWidth;
+	gridWidth = map_width * boxWidth;
+	gridHeight = map_height * boxWidth;
 	var max_width_height = map_width > map_height ? map_width : map_height;
-	horizontal_padding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
-	vertical_padding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
-	canvas_width = max_width_height * boxWidth;
-	canvas_height = max_width_height * boxWidth;
+	horizontalPadding = (map_height > map_width ? (map_height - map_width) / 2 : 0) * boxWidth;
+	verticalPadding = (map_width > map_height ? (map_width - map_height) / 2 : 0) * boxWidth;
+	canvasWidth = max_width_height * boxWidth;
+	canvasHeight = max_width_height * boxWidth;
 
 	var previous_attacker_x = attackingTile.x;
 	attackingTile.x = (previous_map_height - 1) - attackingTile.y;
@@ -350,8 +350,8 @@ function rotate_clockwise() {
 		spireTile.y = previous_tile_x;
 	});
 
-	canvas.width = canvas_width;
-	canvas.height = canvas_height;
+	canvas.width = canvasWidth;
+	canvas.height = canvasHeight;
 
 	var highlightAttackerLoS = $('#highlightAttackerLoS').is(":checked");
 	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
@@ -379,8 +379,8 @@ function getMap(mapName) {
 function drawBoard(callback){
 	var gridDisplay = $('input[name=gridDisplay]:checked' ).val();
 	context.fillStyle = "black";
-	context.fillRect(0, 0, canvas_width, canvas_height);
-	context.clearRect(horizontal_padding, vertical_padding, grid_width, grid_height);
+	context.fillRect(0, 0, canvasWidth, canvasHeight);
+	context.clearRect(horizontalPadding, verticalPadding, gridWidth, gridHeight);
 	if (gridDisplay == 'grid') {
 		drawGrid();
 		drawLOSTiles();
@@ -413,10 +413,10 @@ function drawMap(callback) {
 		context.save();
 		context.translate(canvas.width/2,canvas.height/2);
 		context.rotate(rotate * Math.PI);
-		var gridWidth = (rotate == 0 || rotate == 1) ? grid_width : grid_height;
-		var gridHeight = (rotate == 0 || rotate == 1) ? grid_height : grid_width;
-		var hPadding = (rotate == 0 || rotate == 1) ? horizontal_padding : vertical_padding;
-		var vPadding = (rotate == 0 || rotate == 1) ? vertical_padding : horizontal_padding;
+		var gridWidth = (rotate == 0 || rotate == 1) ? gridWidth : gridHeight;
+		var gridHeight = (rotate == 0 || rotate == 1) ? gridHeight : gridWidth;
+		var hPadding = (rotate == 0 || rotate == 1) ? horizontalPadding : verticalPadding;
+		var vPadding = (rotate == 0 || rotate == 1) ? verticalPadding : horizontalPadding;
 		context.drawImage(map_image, 0, 0, map_image.width, map_image.height,  (-canvas.width/2 + hPadding), (-canvas.height/2 + vPadding), gridWidth, gridHeight);
 		context.restore();
 		if (callback) { callback(); }
@@ -425,7 +425,7 @@ function drawMap(callback) {
 		map_image = new Image();
 		map_image.onload = function() {
 			map_image_name = map_name;
-			context.drawImage(map_image, 0, 0, map_image.width, map_image.height, horizontal_padding, vertical_padding, grid_width, grid_height);
+			context.drawImage(map_image, 0, 0, map_image.width, map_image.height, horizontalPadding, verticalPadding, gridWidth, gridHeight);
 			if (callback) { callback(); }
 		};
 		map_image.src = './images/' + map_name + '.jpg';
@@ -435,13 +435,13 @@ function drawMap(callback) {
 function drawGrid(){
 	context.beginPath();
 	context.strokeStyle = "black";
-	for (var x = 0; x <= grid_width; x += boxWidth) {
-		context.moveTo(0.5 + (x + horizontal_padding), vertical_padding);
-		context.lineTo(0.5 + x + horizontal_padding, (grid_height + vertical_padding));
+	for (var x = 0; x <= gridWidth; x += boxWidth) {
+		context.moveTo(0.5 + (x + horizontalPadding), verticalPadding);
+		context.lineTo(0.5 + x + horizontalPadding, (gridHeight + verticalPadding));
 	}
-	for (var y = 0; y <= grid_height; y += boxWidth) {
-		context.moveTo(horizontal_padding, 0.5 + y + vertical_padding);
-		context.lineTo(grid_width + horizontal_padding, 0.5 + y + vertical_padding);
+	for (var y = 0; y <= gridHeight; y += boxWidth) {
+		context.moveTo(horizontalPadding, 0.5 + y + verticalPadding);
+		context.lineTo(gridWidth + horizontalPadding, 0.5 + y + verticalPadding);
 	}
 	context.lineWidth = 1;
 	context.stroke();
@@ -463,8 +463,8 @@ function drawLOSTiles() {
 
 function getTile(clientX, clientY, event) {
 	var rect = canvas.getBoundingClientRect();
-	x = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
-	y = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+	x = Math.floor((clientX - rect.left - horizontalPadding) / boxWidth);
+	y = Math.floor((clientY - rect.top - verticalPadding) / boxWidth);
 	return { x : x, y: y };
 }
 
@@ -473,13 +473,13 @@ function selectTile(clientX, clientY, target) {
 	var xCoord = clientX - rect.left;
 	var yCoord = clientY - rect.top;
 	//check for click in padding
-	if (xCoord < horizontal_padding || xCoord > (horizontal_padding + grid_width) ||
-		yCoord < vertical_padding || yCoord > (vertical_padding + grid_height)) {
+	if (xCoord < horizontalPadding || xCoord > (horizontalPadding + gridWidth) ||
+		yCoord < verticalPadding || yCoord > (verticalPadding + gridHeight)) {
 		return false;
 	}
 	//convert to coordinates
-	xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
-	yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+	xCoord = Math.floor((clientX - rect.left - horizontalPadding) / boxWidth);
+	yCoord = Math.floor((clientY - rect.top - verticalPadding) / boxWidth);
 	//check for offMap tile click
 	var offMapTile = offMapTiles.find(function(tile) {
 		return tile.x == xCoord && tile.y == yCoord;
@@ -509,43 +509,43 @@ function selectTile(clientX, clientY, target) {
 }
 
 function drawOffMapTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(0, 0, 0)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawBlockingTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(200, 0, 0, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawSpireTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(300, 300, 300, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawAttackerLOSTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(255, 255, 0, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawDefenderLOSTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(0, 191, 255, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
 
 function drawMutualLOSTile(tile) {
-	var xCoord = (tile.x * boxWidth) + horizontal_padding;
-	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	var xCoord = (tile.x * boxWidth) + horizontalPadding;
+	var yCoord = (tile.y * boxWidth) + verticalPadding;
 	context.fillStyle = 'rgba(0, 255, 0, 0.5)';
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
@@ -553,10 +553,10 @@ function drawMutualLOSTile(tile) {
 function drawWall(wall) {
 	context.beginPath();
 	context.strokeStyle = "black";
-	var startX = (wall[0].x * boxWidth) + horizontal_padding;
-	var startY = (wall[0].y * boxWidth) + vertical_padding;
-	var endX = (wall[1].x * boxWidth) + horizontal_padding;
-	var endY = (wall[1].y * boxWidth) + vertical_padding;
+	var startX = (wall[0].x * boxWidth) + horizontalPadding;
+	var startY = (wall[0].y * boxWidth) + verticalPadding;
+	var endX = (wall[1].x * boxWidth) + horizontalPadding;
+	var endY = (wall[1].y * boxWidth) + verticalPadding;
 	context.moveTo(1 + startX, 1 + startY);
 	context.lineTo(1 + endX, 1 + endY);
 	context.moveTo(-1 + startX, -1 + startY);
@@ -568,10 +568,10 @@ function drawWall(wall) {
 function drawEdge(edge) {
 	context.beginPath();
 	context.strokeStyle = "yellow";
-	var startX = (edge[0].x * boxWidth) + horizontal_padding;
-	var startY = (edge[0].y * boxWidth) + vertical_padding;
-	var endX = (edge[1].x * boxWidth) + horizontal_padding;
-	var endY = (edge[1].y * boxWidth) + vertical_padding;
+	var startX = (edge[0].x * boxWidth) + horizontalPadding;
+	var startY = (edge[0].y * boxWidth) + verticalPadding;
+	var endX = (edge[1].x * boxWidth) + horizontalPadding;
+	var endY = (edge[1].y * boxWidth) + verticalPadding;
 	context.moveTo(1 + startX, 1 + startY);
 	context.lineTo(1 + endX, 1 + endY);
 	context.moveTo(-1 + startX, -1 + startY);
@@ -583,10 +583,10 @@ function drawEdge(edge) {
 function drawBlockingEdge(edge) {
 	context.beginPath();
 	context.strokeStyle = "red";
-	var startX = (edge[0].x * boxWidth) + horizontal_padding;
-	var startY = (edge[0].y * boxWidth) + vertical_padding;
-	var endX = (edge[1].x * boxWidth) + horizontal_padding;
-	var endY = (edge[1].y * boxWidth) + vertical_padding;
+	var startX = (edge[0].x * boxWidth) + horizontalPadding;
+	var startY = (edge[0].y * boxWidth) + verticalPadding;
+	var endX = (edge[1].x * boxWidth) + horizontalPadding;
+	var endY = (edge[1].y * boxWidth) + verticalPadding;
 	context.moveTo(1 + startX, 1 + startY);
 	context.lineTo(1 + endX, 1 + endY);
 	context.moveTo(-1 + startX, -1 + startY);
@@ -598,8 +598,8 @@ function drawBlockingEdge(edge) {
 function drawBlockingIntersection(intersection) {
 	context.beginPath();
 	context.strokeStyle = "red";
-	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
-	var yCoord = (intersection.y * boxWidth) + vertical_padding;
+	var xCoord = (intersection.x * boxWidth) + horizontalPadding;
+	var yCoord = (intersection.y * boxWidth) + verticalPadding;
 	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
 	context.fillStyle = 'rgba(200, 0, 0)';
 	context.fill();
@@ -609,8 +609,8 @@ function drawBlockingIntersection(intersection) {
 function drawVerboseBlockingIntersection(intersection) {
 	context.beginPath();
 	context.strokeStyle = "red";
-	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
-	var yCoord = (intersection.y * boxWidth) + vertical_padding;
+	var xCoord = (intersection.x * boxWidth) + horizontalPadding;
+	var yCoord = (intersection.y * boxWidth) + verticalPadding;
 	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
 	context.fillStyle = 'rgba(200, 0, 0)';
 	context.fill();
@@ -624,8 +624,8 @@ function drawVerboseBlockingIntersection(intersection) {
 function drawIntersection(intersection) {
 	context.beginPath();
 	context.strokeStyle = "green";
-	var xCoord = (intersection.x * boxWidth) + horizontal_padding;
-	var yCoord = (intersection.y * boxWidth) + vertical_padding;
+	var xCoord = (intersection.x * boxWidth) + horizontalPadding;
+	var yCoord = (intersection.y * boxWidth) + verticalPadding;
 	context.arc(xCoord, yCoord, boxWidth / 10, 0, 2 * Math.PI);
 	context.fillStyle = 'green';
 	context.fill();
@@ -637,8 +637,8 @@ function drawAttacker() {
 		context.beginPath();
 		context.strokeStyle = "black";
 		context.lineWidth = 1;
-		var x = (attackingTile.x * boxWidth) + horizontal_padding + (0.5 * boxWidth);
-		var y = (attackingTile.y * boxWidth) + vertical_padding + (0.5 * boxWidth);
+		var x = (attackingTile.x * boxWidth) + horizontalPadding + (0.5 * boxWidth);
+		var y = (attackingTile.y * boxWidth) + verticalPadding + (0.5 * boxWidth);
 		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
 		context.fillStyle = 'white';
 		context.fill();
@@ -652,8 +652,8 @@ function drawDefender() {
 		context.beginPath();
 		context.strokeStyle = "black";
 		context.lineWidth = 1;
-		var x = (defendingTile.x * boxWidth) + horizontal_padding + (0.5 * boxWidth);
-		var y = (defendingTile.y * boxWidth) + vertical_padding + (0.5 * boxWidth);
+		var x = (defendingTile.x * boxWidth) + horizontalPadding + (0.5 * boxWidth);
+		var y = (defendingTile.y * boxWidth) + verticalPadding + (0.5 * boxWidth);
 		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
 		context.fillStyle = 'white';
 		context.fill();
@@ -667,8 +667,8 @@ function drawBlocker(blocker) {
 		context.beginPath();
 		context.strokeStyle = "black";
 		context.lineWidth = 1;
-		var x = (blocker.x * boxWidth) + horizontal_padding + (0.5 * boxWidth);
-		var y = (blocker.y * boxWidth) + vertical_padding + (0.5 * boxWidth);
+		var x = (blocker.x * boxWidth) + horizontalPadding + (0.5 * boxWidth);
+		var y = (blocker.y * boxWidth) + verticalPadding + (0.5 * boxWidth);
 		context.arc(x, y, (0.5 * boxWidth), 0, 2 * Math.PI);
 		context.fillStyle = 'white';
 		context.fill();
@@ -679,22 +679,22 @@ function drawBlocker(blocker) {
 
 function drawAttackerIcon () {
 	context.drawImage(attacker_image, 0, 0, attacker_image.width, attacker_image.height, 
-		(attackingTile.x * boxWidth) + horizontal_padding + (0.1 * boxWidth),
-		(attackingTile.y * boxWidth) + vertical_padding + (0.15 * boxWidth), 
+		(attackingTile.x * boxWidth) + horizontalPadding + (0.1 * boxWidth),
+		(attackingTile.y * boxWidth) + verticalPadding + (0.15 * boxWidth), 
 		(0.7 * boxWidth), (0.7 * boxWidth));
 }
 
 function drawDefenderIcon() {
 	context.drawImage(defender_image, 0, 0, defender_image.width, defender_image.height, 
-		(defendingTile.x * boxWidth) + horizontal_padding,
-		(defendingTile.y * boxWidth) + vertical_padding, 
+		(defendingTile.x * boxWidth) + horizontalPadding,
+		(defendingTile.y * boxWidth) + verticalPadding, 
 		boxWidth, boxWidth);
 }
 
 function drawBlockerIcon (x, y) {
 	context.drawImage(blocker_image, 0, 0, blocker_image.width, blocker_image.height, 
-		(x * boxWidth) + horizontal_padding + (0.15 * boxWidth),
-		(y * boxWidth) + vertical_padding + (0.2 * boxWidth), 
+		(x * boxWidth) + horizontalPadding + (0.15 * boxWidth),
+		(y * boxWidth) + verticalPadding + (0.2 * boxWidth), 
 		(0.7 * boxWidth), (0.7 * boxWidth));
 }
 
@@ -716,10 +716,10 @@ function drawLineOfSight(attackingCorner, defendingCorner) {
 	context.beginPath();
 	context.strokeStyle = "red";
 	context.lineWidth = 1;
-	var startX = (attackingCorner.x * boxWidth) + horizontal_padding;
-	var startY = (attackingCorner.y * boxWidth) + vertical_padding;
-	var endX = (defendingCorner.x * boxWidth) + horizontal_padding;
-	var endY = (defendingCorner.y * boxWidth) + vertical_padding;
+	var startX = (attackingCorner.x * boxWidth) + horizontalPadding;
+	var startY = (attackingCorner.y * boxWidth) + verticalPadding;
+	var endX = (defendingCorner.x * boxWidth) + horizontalPadding;
+	var endY = (defendingCorner.y * boxWidth) + verticalPadding;
 	context.moveTo(startX, startY);
 	context.lineTo(endX, endY);
 	context.stroke();
@@ -2240,13 +2240,13 @@ $(document).on('click', '#clearMap', function () {
 	});
 });
 
-$(document).on('click', '.rotate-map-counter-clockwise', function () {
-	rotate_counter_clockwise();
-});
+// $(document).on('click', '.rotate-map-counter-clockwise', function () {
+// 	rotate_counter_clockwise();
+// });
 
-$(document).on('click', '.rotate-map-clockwise', function () {
-	rotate_clockwise();
-});
+// $(document).on('click', '.rotate-map-clockwise', function () {
+// 	rotate_clockwise();
+// });
 	
 $(document).on('map_loaded', '#map_load', function(event, mapName) {
 	loadMap(mapName);
