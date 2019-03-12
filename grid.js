@@ -241,7 +241,7 @@ function rotate_counter_clockwise() {
 	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 	calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 		drawBoard(function () {
-			calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
+			grid_calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
 			drawLinesOfSight();
 		});
 	});
@@ -357,7 +357,7 @@ function rotate_clockwise() {
 	var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 	calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 		drawBoard(function () {
-			calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
+			grid_calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
 			drawLinesOfSight();
 		});
 	});
@@ -934,7 +934,7 @@ function calculateLoSFromTileToTile(fromTileX, fromTileY, toTileX, toTileY) {
 	return false;
 }
 
-function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY) {
+function grid_calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY) {
 	if ((fromTileX != -1 && fromTileY != -1 &&
 		 toTileX != -1 && toTileY != -1) == false) {
 		return;
@@ -2198,7 +2198,7 @@ function boardClick(event) {
 		var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 		calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 			drawBoard(function () {
-				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
+				grid_calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y);
 				drawLinesOfSight();
 			});
 		});
