@@ -1,4 +1,3 @@
-
 QUnit.module( "rotate tile counterclockwise" );
 QUnit.test("tile -1, -1, previousMapWidth 2", function( assert ) {
 	//arrange

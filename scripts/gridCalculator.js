@@ -1383,7 +1383,7 @@ var GridCalculator = function() {
 
     GridCalculator.calculateMutualLoSTiles = function(attackerLoS, defenderLoS) {
         var mutualLOSTiles = attackerLoS.filter(function (attackerLoSTile) {
-            var defenderTileIndex = defenderLOSTiles.findIndex(function (defenderLoSTile) {
+            var defenderTileIndex = defenderLoS.findIndex(function (defenderLoSTile) {
                 return defenderLoSTile.x == attackerLoSTile.x && defenderLoSTile.y == attackerLoSTile.y;
             });
             return defenderTileIndex > -1;

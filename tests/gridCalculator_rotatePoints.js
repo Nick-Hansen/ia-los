@@ -1,4 +1,3 @@
-
 QUnit.module( "rotate point counterclockwise" );
 QUnit.test("point 1, 1, previousMapWidth 2", function( assert ) {
 	//arrange

@@ -1,4 +1,3 @@
-
 QUnit.module( "rotate edge counterclockwise" );
 QUnit.test("edge (1, 0) > (1, 1), previousMapWidth 2", function( assert ) {
 	//arrange
