@@ -311,7 +311,7 @@ var GridCalculator = function() {
             attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
         if (pathBlocked) { return false; }
 
-        var tiles = GridCalculator.getTiles(verticalEdges, horizontalEdges, intersections,
+        var tiles = GridCalculator.getTiles(verticalEdges, horizontalEdges,
             fromTileX, fromTileY, toTileX, toTileY,
             attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
         var targetSpire = spireTiles.find(function(spire_Tile) {
@@ -474,7 +474,7 @@ var GridCalculator = function() {
         return intersections;
     }
 
-    GridCalculator.getTiles = function(verticalEdges, horizontalEdges, intersections, 
+    GridCalculator.getTiles = function(verticalEdges, horizontalEdges, 
         fromTileX, fromTileY, toTileX, toTileY, 
         startX, startY, endX, endY) {
         var tiles = [];
