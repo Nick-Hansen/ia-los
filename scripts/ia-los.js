@@ -403,11 +403,7 @@ function calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, fromTileX
 }
 
 function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY, callback) {
-	//var grid_LoS = {};
 	if (attackingTile.x != defendingTile.x && attackingTile.y != defendingTile.y) {
-		//linesOfSight = {};
-		//grid_calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY);
-		//grid_LoS = linesOfSight;
 		gridCalculator.init({
 			offMapTiles: offMapTiles,
 			walls: walls,
@@ -422,7 +418,6 @@ function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTil
 		gridCalculator.calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY, 
 			function(losPaths) {
 				updateLinesOfSight(losPaths);
-				//console.log('compare los\ngrid los: ' + JSON.stringify(grid_LoS) + '\nia-los: ' + JSON.stringify(linesOfSight));
 				updateLinesOfSightDropdown(losPaths);
 				if (callback) { callback(); }
 			}
