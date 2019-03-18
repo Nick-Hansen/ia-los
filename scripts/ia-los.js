@@ -16,6 +16,7 @@ var grid_width = 0;
 var grid_height = 0;
 
 //map items
+var map_image_name;
 var map_name = '';
 var map_width = 0;
 var map_height = 0;
@@ -85,6 +86,7 @@ function clearMap(callback) {
 	mutualLOSTiles = [];
 	blockers = [];
 	linesOfSight = {};
+	updateLinesOfSightDropdown([]);
 	if (callback) { callback(); }
 }
 
