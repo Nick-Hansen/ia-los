@@ -2,41 +2,24 @@ var GridCalculator = function() {
     'user strict';
     
     //private variables
-    var offMapTiles = [];
-    var walls = [];
-    var blockingTiles = [];
-    var blockingEdges = [];
-    var blockingIntersections = [];
-    var spireTiles = [];
-    var attackingTile = { x: -1, y: -1};
-    var defendingTile = { x: -1, y: -1};
-    var blockers = [];
 
     //private functions
     
     //public accessor
     var GridCalculator = {};
 
-    //public functions
-    GridCalculator.init = function (options) {
-        offMapTiles = options.offMapTiles;
-        walls = options.walls;
-        blockingTiles = options.blockingTiles;
-        blockingEdges = options.blockingEdges;
-        blockingIntersections = options.blockingIntersections;
-        spireTiles = options.spireTiles;
-        attackingTile = options.attackingTile;
-        defendingTile = options.defendingTile;
-        blockers = options.blockers;
-    };
-
-    GridCalculator.calculateAttackerLoSTiles = function(fromTileX, fromTileY, width, height) {
+    GridCalculator.calculateAttackerLoSTiles = function(fromTileX, fromTileY, width, height,
+        blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+        blockingIntersections, spireTiles) {
         var attackerLOSTiles = [];
         //check to see attacking tile present
         if (fromTileX != -1 && fromTileY != -1) {
             for (var w = 0; w < width; w++) {
                 for (var h = 0; h < height; h++) {
-                    var attckerHasLoSToTile = GridCalculator.calculateLoSFromTileToTile(fromTileX, fromTileY, w, h);
+                    var attckerHasLoSToTile = GridCalculator.calculateLoSFromTileToTile(
+                        fromTileX, fromTileY, w, h,
+                        blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+                        blockingIntersections, spireTiles);
                     if (attckerHasLoSToTile == true) {
                         attackerLOSTiles.push({ "x": w, "y": h });
                     }
@@ -46,12 +29,17 @@ var GridCalculator = function() {
         return attackerLOSTiles;
     }
 
-    GridCalculator.calculateDefenderLoSTiles = function(toTileX, toTileY, width, height) {
+    GridCalculator.calculateDefenderLoSTiles = function(toTileX, toTileY, width, height,
+        blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+        blockingIntersections, spireTiles) {
         var defenderLOSTiles = [];
         if (toTileX != -1 && toTileY != -1) {
             for (var w = 0; w < width; w++) {
                 for (var h = 0; h < height; h++) {
-                    var attckerHasLoSToTile = GridCalculator.calculateLoSFromTileToTile(w, h, toTileX, toTileY);
+                    var attckerHasLoSToTile = GridCalculator.calculateLoSFromTileToTile(
+                        w, h, toTileX, toTileY,
+                        blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+                        blockingIntersections, spireTiles);
                     if (attckerHasLoSToTile == true) {
                         defenderLOSTiles.push({ "x": w, "y": h });
                     }
@@ -61,7 +49,9 @@ var GridCalculator = function() {
         return defenderLOSTiles;
     }
 
-    GridCalculator.calculateLoSFromTileToTile = function(fromTileX, fromTileY, toTileX, toTileY) {
+    GridCalculator.calculateLoSFromTileToTile = function(fromTileX, fromTileY, toTileX, toTileY, 
+        blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+        blockingIntersections, spireTiles) {
         if (fromTileX == toTileX && fromTileY == toTileY) { return true; }
         var offMapTileIndex = offMapTiles.findIndex(function(off_map_tile) {
             return (off_map_tile.x == toTileX && off_map_tile.y == toTileY) ||
@@ -82,14 +72,14 @@ var GridCalculator = function() {
         var to_bottom = { x: toTileX + 0.5, y: toTileY + 1 };
         var to_left = { x: toTileX, y: toTileY + 0.5 };
     
-        var tl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tl);
-        var tl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tr);
-        var tl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_br);
-        var tl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bl);
-        var tl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_top);
-        var tl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_right);
-        var tl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bottom);
-        var tl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_left);
+        var tl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_top, blockingEdges, walls);
+        var tl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_right, blockingEdges, walls);
+        var tl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_bottom, blockingEdges, walls);
+        var tl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tl, to_left, blockingEdges, walls);
         var tl_to_tl_tr_overlaps = GridCalculator.pathsOverlap(from_tl, to_tl, to_tr);
         var tl_to_tr_br_overlaps = GridCalculator.pathsOverlap(from_tl, to_tr, to_br);
         var tl_to_bl_br_overlaps = GridCalculator.pathsOverlap(from_tl, to_bl, to_br);
@@ -101,14 +91,14 @@ var GridCalculator = function() {
             return true;
         }
     
-        var tr_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_tl);
-        var tr_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_tr);
-        var tr_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_br);
-        var tr_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bl);
-        var tr_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_top);
-        var tr_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_right);
-        var tr_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bottom);
-        var tr_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_left);
+        var tr_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tr_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tr_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tr_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var tr_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_top, blockingEdges, walls);
+        var tr_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_right, blockingEdges, walls);
+        var tr_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_bottom, blockingEdges, walls);
+        var tr_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_tr, to_left, blockingEdges, walls);
         var tr_to_tl_tr_overlaps = GridCalculator.pathsOverlap(from_tr, to_tl, to_tr);
         var tr_to_tr_br_overlaps = GridCalculator.pathsOverlap(from_tr, to_tr, to_br);
         var tr_to_bl_br_overlaps = GridCalculator.pathsOverlap(from_tr, to_bl, to_br);
@@ -120,14 +110,14 @@ var GridCalculator = function() {
             return true;
         }
     
-        var bl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_tl);
-        var bl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_tr);
-        var bl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_br);
-        var bl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bl);
-        var bl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_top);
-        var bl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_right);
-        var bl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bottom);
-        var bl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_left);
+        var bl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var bl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var bl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var bl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var bl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_top, blockingEdges, walls);
+        var bl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_right, blockingEdges, walls);
+        var bl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_bottom, blockingEdges, walls);
+        var bl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_bl, to_left, blockingEdges, walls);
         var bl_to_tl_tr_overlaps = GridCalculator.pathsOverlap(from_bl, to_tl, to_tr);
         var bl_to_tr_br_overlaps = GridCalculator.pathsOverlap(from_bl, to_tr, to_br);
         var bl_to_bl_br_overlaps = GridCalculator.pathsOverlap(from_bl, to_bl, to_br);
@@ -139,14 +129,14 @@ var GridCalculator = function() {
             return true;
         }
     
-        var br_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_tl);
-        var br_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_tr);
-        var br_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_br);
-        var br_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bl);
-        var br_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_top);
-        var br_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_right);
-        var br_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bottom);
-        var br_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_left);
+        var br_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var br_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var br_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var br_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+        var br_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_top, blockingEdges, walls);
+        var br_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_right, blockingEdges, walls);
+        var br_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_bottom, blockingEdges, walls);
+        var br_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, from_br, to_left, blockingEdges, walls);
         var br_to_tl_tr_overlaps = GridCalculator.pathsOverlap(from_br, to_tl, to_tr);
         var br_to_tr_br_overlaps = GridCalculator.pathsOverlap(from_br, to_tr, to_br);
         var br_to_bl_br_overlaps = GridCalculator.pathsOverlap(from_br, to_bl, to_br);
@@ -161,7 +151,9 @@ var GridCalculator = function() {
         return false;
     }
 
-    GridCalculator.calculateLoSFromAttackerToDefender = function(fromTileX, fromTileY, toTileX, toTileY, callback) {
+    GridCalculator.calculateLoSFromAttackerToDefender = function(fromTileX, fromTileY, toTileX, toTileY, 
+        blockers, blockingTiles, offMapTiles, blockingEdges, walls, 
+        blockingIntersections, spireTiles, callback) {
         if ((fromTileX != -1 && fromTileY != -1 &&
             toTileX != -1 && toTileY != -1) == false) {
            return;
@@ -196,53 +188,53 @@ var GridCalculator = function() {
        var br_to_bl_br_overlaps = GridCalculator.pathsOverlap(attacker_br, defender_bl, defender_br);
        var br_to_tl_bl_overlaps = GridCalculator.pathsOverlap(attacker_br, defender_tl, defender_bl);
    
-       var tl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_tl);
-       var tl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_tr);
-       var tl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_br);
-       var tl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bl);
-       var tl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_top);
-       var tl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_right);
-       var tl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bottom);
-       var tl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_left);
+       var tl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_top, blockingEdges, walls);
+       var tl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_right, blockingEdges, walls);
+       var tl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_bottom, blockingEdges, walls);
+       var tl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tl, defender_left, blockingEdges, walls);
        var tl_to_tl_tr_enabled = tl_to_tl && tl_to_tr && tl_to_top && !tl_to_tl_tr_overlaps;
        var tl_to_tr_br_enabled = tl_to_tr && tl_to_br && tl_to_right && !tl_to_tr_br_overlaps;
        var tl_to_bl_br_enabled = tl_to_bl && tl_to_br && tl_to_bottom && !tl_to_bl_br_overlaps;
        var tl_to_tl_bl_enabled = tl_to_tl && tl_to_bl && tl_to_left && !tl_to_tl_bl_overlaps;
    
-       var tr_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tl);
-       var tr_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tr);
-       var tr_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_br);
-       var tr_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bl);
-       var tr_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_top);
-       var tr_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_right);
-       var tr_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bottom);
-       var tr_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_left);
+       var tr_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tr_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tr_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tr_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var tr_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_top, blockingEdges, walls);
+       var tr_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_right, blockingEdges, walls);
+       var tr_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_bottom, blockingEdges, walls);
+       var tr_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_tr, defender_left, blockingEdges, walls);
        var tr_to_tl_tr_enabled = tr_to_tl && tr_to_tr && tr_to_top && !tr_to_tl_tr_overlaps;
        var tr_to_tr_br_enabled = tr_to_tr && tr_to_br && tr_to_right && !tr_to_tr_br_overlaps;
        var tr_to_bl_br_enabled = tr_to_bl && tr_to_br && tr_to_bottom && !tr_to_bl_br_overlaps;
        var tr_to_tl_bl_enabled = tr_to_tl && tr_to_bl && tr_to_left && !tr_to_tl_bl_overlaps;
    
-       var bl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tl);
-       var bl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tr);
-       var bl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_br);
-       var bl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bl);
-       var bl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_top);
-       var bl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_right);
-       var bl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bottom);
-       var bl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_left);
+       var bl_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var bl_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var bl_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var bl_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var bl_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_top, blockingEdges, walls);
+       var bl_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_right, blockingEdges, walls);
+       var bl_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_bottom, blockingEdges, walls);
+       var bl_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_bl, defender_left, blockingEdges, walls);
        var bl_to_tl_tr_enabled = bl_to_tl && bl_to_tr && bl_to_top && !bl_to_tl_tr_overlaps;
        var bl_to_tr_br_enabled = bl_to_tr && bl_to_br && bl_to_right && !bl_to_tr_br_overlaps;
        var bl_to_bl_br_enabled = bl_to_bl && bl_to_br && bl_to_bottom && !bl_to_bl_br_overlaps;
        var bl_to_tl_bl_enabled = bl_to_tl && bl_to_bl && bl_to_left && !bl_to_tl_bl_overlaps;
    
-       var br_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tl);
-       var br_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tr);
-       var br_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_br);
-       var br_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bl);
-       var br_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_top);
-       var br_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_right);
-       var br_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bottom);
-       var br_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_left);
+       var br_to_tl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var br_to_tr = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_tr, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var br_to_br = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_br, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var br_to_bl = GridCalculator.getLosFromCornerToCorner(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bl, blockers, blockingTiles, offMapTiles, blockingEdges, walls, blockingIntersections, spireTiles);
+       var br_to_top = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_top, blockingEdges, walls);
+       var br_to_right = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_right, blockingEdges, walls);
+       var br_to_bottom = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_bottom, blockingEdges, walls);
+       var br_to_left = GridCalculator.getLosFromPointToPoint(fromTileX, fromTileY, toTileX, toTileY, attacker_br, defender_left, blockingEdges, walls);
        var br_to_tl_tr_enabled = br_to_tl && br_to_tr && br_to_top && !br_to_tl_tr_overlaps;
        var br_to_tr_br_enabled = br_to_tr && br_to_br && br_to_right && !br_to_tr_br_overlaps;
        var br_to_bl_br_enabled = br_to_bl && br_to_br && br_to_bottom && !br_to_bl_br_overlaps;
@@ -294,21 +286,24 @@ var GridCalculator = function() {
         return false;
     }
 
-    GridCalculator.getLosFromCornerToCorner = function(fromTileX, fromTileY, toTileX, toTileY, attackingCorner, defendingCorner) {
+    GridCalculator.getLosFromCornerToCorner = function(fromTileX, fromTileY, toTileX, toTileY, 
+        attackingCorner, defendingCorner, blockers, blockingTiles, offMapTiles,
+        blockingEdges, walls, blockingIntersections, spireTiles) {
         var pathBlocked = false;
 
         var verticalEdges = GridCalculator.getVerticalEdges(attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
-        pathBlocked = GridCalculator.edgeBlocked(verticalEdges);
+        pathBlocked = GridCalculator.edgeBlocked(verticalEdges, blockingEdges, walls);
         if (pathBlocked) { return false; }
 
         var horizontalEdges = GridCalculator.getHorizontalEdges(attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
-        pathBlocked = GridCalculator.edgeBlocked(horizontalEdges);
+        pathBlocked = GridCalculator.edgeBlocked(horizontalEdges, blockingEdges, walls);
         if (pathBlocked) { return false; }
 
         var intersections = GridCalculator.getIntersections(attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
         pathBlocked = GridCalculator.intersectionBlocked(intersections, 
             fromTileX, fromTileY, toTileX, toTileY,
-            attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
+            attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y,
+            blockingIntersections);
         if (pathBlocked) { return false; }
 
         var tiles = GridCalculator.getTiles(verticalEdges, horizontalEdges,
@@ -318,16 +313,17 @@ var GridCalculator = function() {
             return (spire_Tile.x == toTileX && spire_Tile.y == toTileY) ||
             (spire_Tile.x == fromTileX && spire_Tile.y == fromTileY);
         });
-        pathBlocked = GridCalculator.tileBlocked(tiles, targetSpire);
+        pathBlocked = GridCalculator.tileBlocked(tiles, targetSpire, blockers, blockingTiles, offMapTiles);
         if (pathBlocked) { return false; }
 
-        pathBlocked = GridCalculator.adjacentTilesBlocked(fromTileX, fromTileY, toTileX, toTileY, attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y);
+        pathBlocked = GridCalculator.adjacentTilesBlocked(fromTileX, fromTileY, toTileX, toTileY, attackingCorner.x, attackingCorner.y, defendingCorner.x, defendingCorner.y, blockers, blockingTiles, offMapTiles);
         if (pathBlocked) { return false; }	
 
         return true;
     }
 
-    GridCalculator.getLosFromPointToPoint = function(fromTileX, fromTileY, toTileX, toTileY, fromPoint, toPoint) {
+    GridCalculator.getLosFromPointToPoint = function(fromTileX, fromTileY, toTileX, toTileY, 
+        fromPoint, toPoint, blockingEdges, walls) {
         var pathBlocked = false;
 
         var verticalEdges = GridCalculator.getVerticalEdges(fromPoint.x, fromPoint.y, toPoint.x, toPoint.y);
@@ -339,7 +335,7 @@ var GridCalculator = function() {
         if (finalEdgeIndex > -1) {
             verticalEdges.splice(finalEdgeIndex, 1);
         }
-        pathBlocked = GridCalculator.edgeBlocked(verticalEdges);
+        pathBlocked = GridCalculator.edgeBlocked(verticalEdges, blockingEdges, walls);
         if (pathBlocked) { return false; }
 
         var horizontalEdges = GridCalculator.getHorizontalEdges(fromPoint.x, fromPoint.y, 
@@ -352,7 +348,7 @@ var GridCalculator = function() {
         if (finalEdgeIndex > -1) {
             horizontalEdges.splice(finalEdgeIndex, 1);
         }
-        pathBlocked = GridCalculator.edgeBlocked(horizontalEdges);
+        pathBlocked = GridCalculator.edgeBlocked(horizontalEdges, blockingEdges, walls);
         if (pathBlocked) { return false; }
 
         return true;
@@ -656,7 +652,7 @@ var GridCalculator = function() {
         return tiles;
     }
 
-    GridCalculator.edgeBlocked = function(pathEdges) {
+    GridCalculator.edgeBlocked = function(pathEdges, blockingEdges, walls) {
         var pathBlocked = false;
 
         pathEdges.forEach(function(pathEdge) {
@@ -682,7 +678,7 @@ var GridCalculator = function() {
         return pathBlocked;
     }
 
-    GridCalculator.tileBlocked = function(pathTiles, spireTile) {
+    GridCalculator.tileBlocked = function(pathTiles, spireTile, blockers, blockingTiles, offMapTiles) {
         var pathBlocked = false;
 
         pathTiles.forEach(function(pathTile) {
@@ -726,7 +722,9 @@ var GridCalculator = function() {
         return pathBlocked;
     }
 
-    GridCalculator.intersectionBlocked = function(pathIntersections, fromTileX, fromTileY, toTileX, toTileY, startX, startY, endX, endY) {
+    GridCalculator.intersectionBlocked = function(pathIntersections, 
+        fromTileX, fromTileY, toTileX, toTileY, startX, startY, endX, endY,
+        blockingIntersections) {
         var intersections = [];
 
         pathIntersections.forEach(function(pIntersection) {
@@ -1196,7 +1194,7 @@ var GridCalculator = function() {
         return pathBlocked;
     }
 
-    GridCalculator.adjacentTilesBlocked = function(fromTileX, fromTileY, toTileX, toTileY, startX, startY, endX, endY) {
+    GridCalculator.adjacentTilesBlocked = function(fromTileX, fromTileY, toTileX, toTileY, startX, startY, endX, endY, blockers, blockingTiles, offMapTiles) {
         //pass vertical lines passing vertical intersections
         var deltaX = endX - startX;
         //pass horizontal lines passing horizontal intersections
@@ -1237,7 +1235,7 @@ var GridCalculator = function() {
                         currentY = startY;
                         continue;
                     }
-                    pathBlocked = GridCalculator.verticallyAdjacentTilesBlocked({ x: currentX, y: currentY});
+                    pathBlocked = GridCalculator.verticallyAdjacentTilesBlocked({ x: currentX, y: currentY }, blockers, blockingTiles, offMapTiles);
                     currentX += xDirection;
                     currentY = startY;
                 }
@@ -1261,7 +1259,7 @@ var GridCalculator = function() {
                         currentY = startY;
                         continue;
                     }
-                    pathBlocked = GridCalculator.verticallyAdjacentTilesBlocked({ x: currentX, y: currentY});
+                    pathBlocked = GridCalculator.verticallyAdjacentTilesBlocked({ x: currentX, y: currentY }, blockers, blockingTiles, offMapTiles);
                     currentX += xDirection;
                     currentY = startY;
                 }
@@ -1284,7 +1282,7 @@ var GridCalculator = function() {
                         currentY += yDirection;
                         continue;
                     }
-                    pathBlocked = GridCalculator.horizontallyAdjacentTilesBlocked({ x: currentX, y: currentY});
+                    pathBlocked = GridCalculator.horizontallyAdjacentTilesBlocked({ x: currentX, y: currentY }, blockers, blockingTiles, offMapTiles);
                     currentX = startX;
                     currentY += yDirection;
                 }
@@ -1308,7 +1306,7 @@ var GridCalculator = function() {
                         currentY += yDirection;
                         continue;
                     }
-                    pathBlocked = GridCalculator.horizontallyAdjacentTilesBlocked({ x: currentX, y: currentY});
+                    pathBlocked = GridCalculator.horizontallyAdjacentTilesBlocked({ x: currentX, y: currentY }, blockers, blockingTiles, offMapTiles);
                     currentX = startX;
                     currentY += yDirection;
                 }
@@ -1317,7 +1315,7 @@ var GridCalculator = function() {
         return pathBlocked;
     }
 
-    GridCalculator.verticallyAdjacentTilesBlocked = function(tile) {
+    GridCalculator.verticallyAdjacentTilesBlocked = function(tile, blockers, blockingTiles, offMapTiles) {
         var tileIndex = offMapTiles.findIndex(function(offMapTile) {
             return offMapTile.x == tile.x && offMapTile.y == tile.y;
         });
@@ -1349,7 +1347,7 @@ var GridCalculator = function() {
         return adjacentTileIndex != -1;
     }
 
-    GridCalculator.horizontallyAdjacentTilesBlocked = function(tile) {
+    GridCalculator.horizontallyAdjacentTilesBlocked = function(tile, blockers, blockingTiles, offMapTiles) {
         var tileIndex = offMapTiles.findIndex(function(offMapTile) {
             return offMapTile.x == tile.x && offMapTile.y == tile.y;
         });

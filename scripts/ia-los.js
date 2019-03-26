@@ -377,23 +377,15 @@ function drawLinesOfSight() {
 }
 
 function calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, fromTileX, fromTileY, toTileX, toTileY, width, height, callback) {
-	gridCalculator.init({
-		offMapTiles: offMapTiles,
-        walls: walls,
-        blockingTiles: blockingTiles,
-        blockingEdges: blockingEdges,
-        blockingIntersections: blockingIntersections,
-        spireTiles: spireTiles,
-        attackingTile: attackingTile,
-        defendingTile: defendingTile,
-        blockers: blockers
-	});
-
 	if (highlightAttackerLoS) {
-		attackerLOSTiles = gridCalculator.calculateAttackerLoSTiles(fromTileX, fromTileY, width, height)
+		attackerLOSTiles = gridCalculator.calculateAttackerLoSTiles(fromTileX, fromTileY, width, height,
+			blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+			blockingIntersections, spireTiles)
 	}
 	if (highlightDefenderLoS) {
-		defenderLOSTiles = gridCalculator.calculateDefenderLoSTiles(toTileX, toTileY, width, height)
+		defenderLOSTiles = gridCalculator.calculateDefenderLoSTiles(toTileX, toTileY, width, height,
+			blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+			blockingIntersections, spireTiles)
 	}
 	if (highlightAttackerLoS && highlightDefenderLoS) {
 		var LOSTiles = gridCalculator.calculateMutualLoSTiles(attackerLOSTiles, defenderLOSTiles);
@@ -404,20 +396,13 @@ function calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, fromTileX
 	if (callback) { callback(); }
 }
 
-function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY, callback) {
+function calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY, 
+	blockers, blockingTiles, offMapTiles, blockingEdges, walls, 
+	blockingIntersections, spireTiles, callback) {
 	if (attackingTile.x != defendingTile.x && attackingTile.y != defendingTile.y) {
-		gridCalculator.init({
-			offMapTiles: offMapTiles,
-			walls: walls,
-			blockingTiles: blockingTiles,
-			blockingEdges: blockingEdges,
-			blockingIntersections: blockingIntersections,
-			spireTiles: spireTiles,
-			attackingTile: attackingTile,
-			defendingTile: defendingTile,
-			blockers: blockers
-		});
 		gridCalculator.calculateLoSFromAttackerToDefender(fromTileX, fromTileY, toTileX, toTileY, 
+			blockers, blockingTiles, offMapTiles, blockingEdges, walls,
+			blockingIntersections, spireTiles,
 			function(losPaths) {
 				updateLinesOfSight(losPaths);
 				updateLinesOfSightDropdown(losPaths);
@@ -455,7 +440,10 @@ $(document).on('boardClick', function(event) {
 		var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 		calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 			drawBoard(function () {
-				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y,
+				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, 
+					defendingTile.x, defendingTile.y,
+					blockers, blockingTiles, offMapTiles, blockingEdges, walls, 
+					blockingIntersections, spireTiles, 
 					function() {
 						drawLinesOfSight();
 					}
@@ -506,7 +494,10 @@ $(document).on('click', '.rotate-map-counter-clockwise', function () {
 		var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 		calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 			drawBoard(function () {
-				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y,
+				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, 
+					defendingTile.x, defendingTile.y,
+					blockers, blockingTiles, offMapTiles, blockingEdges, walls, 
+					blockingIntersections, spireTiles, 
 					function() {
 						drawLinesOfSight();
 					}
@@ -522,7 +513,10 @@ $(document).on('click', '.rotate-map-clockwise', function () {
 		var highlightDefenderLoS = $('#highlightDefenderLoS').is(":checked");
 		calculateLoSTiles(highlightAttackerLoS, highlightDefenderLoS, attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y, map_width, map_height, function () {
 			drawBoard(function () {
-				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, defendingTile.x, defendingTile.y,
+				calculateLoSFromAttackerToDefender(attackingTile.x, attackingTile.y, 
+					defendingTile.x, defendingTile.y,					
+					blockers, blockingTiles, offMapTiles, blockingEdges, walls, 
+					blockingIntersections, spireTiles, 
 					function() {
 						drawLinesOfSight();
 					}
