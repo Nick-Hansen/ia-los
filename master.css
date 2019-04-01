@@ -61,6 +61,16 @@ label[for="blocking_tile"] {
 	margin: 10px;
 }
 
+label[for="spire_tile"] {
+	display: inline-block;
+	background-color: white;
+	border: 2px solid black;
+	border-radius: 8px;
+	width: 42px;
+	height: 42px;
+	margin: 10px;
+}
+
 label[for="wall_vertical"] {
 	display: inline-block;
 	background-color: black;
@@ -116,6 +126,7 @@ input[type="radio"]:checked+label[for="defender"],
 input[type="radio"]:checked+label[for="blocker"],
 input[type="radio"]:checked+label[for="off_map_tile"], 
 input[type="radio"]:checked+label[for="blocking_tile"],
+input[type="radio"]:checked+label[for="spire_tile"],
 input[type="radio"]:checked+label[for="wall_vertical"],
 input[type="radio"]:checked+label[for="wall_horizontal"],
 input[type="radio"]:checked+label[for="blocking_edge_vertical"],

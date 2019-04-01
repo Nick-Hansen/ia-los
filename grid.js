@@ -32,6 +32,7 @@ var ia_los_maps = {};
 var offMapTiles = [];
 var walls = [];
 var blockingTiles = [];
+var spireTiles = [];
 var blockingEdges = [];
 var blockingIntersections = [];
 
@@ -122,6 +123,7 @@ function loadSerializedMap(mapName) {
 		walls = map.walls;
 		blockingTiles = map.blockingTiles;
 		blockingEdges = map.blockingEdges;
+		spireTiles = map.spireTiles || [];
 		blockingIntersections = map.blockingIntersections;
 
 		canvas.width = canvas_width;
@@ -164,6 +166,7 @@ function loadCustomMap() {
 	blockingTiles = [];
 	blockingEdges = [];
 	blockingIntersections = [];
+	spireTiles = [];
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -201,6 +204,7 @@ function loadMap(mapName) {
 	blockingTiles = map.blockingTiles;
 	blockingEdges = map.blockingEdges;
 	blockingIntersections = map.blockingIntersections;
+	spireTiles = map.spireTiles || [];
 
 	canvas.width = canvas_width;
 	canvas.height = canvas_height;
@@ -354,6 +358,7 @@ function drawGrid(){
 	walls.forEach(drawWall);
 	blockingTiles.forEach(drawBlockingTile);
 	blockingEdges.forEach(drawBlockingEdge);
+	spireTiles.forEach(drawSpireTile);
 	//blockingIntersections.forEach(drawBlockingIntersection);
 	//blockingIntersections.forEach(drawVerboseBlockingIntersection);
 	if (map_name == 'custom') {
@@ -412,6 +417,19 @@ function editMap(clientX, clientY, target) {
 			blockingTiles.push({ x: xCoord, y: yCoord });
 		} else {
 			blockingTiles.splice(blockingTileIndex, 1);
+		}
+	} else if (target == 'spire_tile') {
+		//convert to coordinates
+		xCoord = Math.floor((clientX - rect.left - horizontal_padding) / boxWidth);
+		yCoord = Math.floor((clientY - rect.top - vertical_padding) / boxWidth);
+
+		var spireTileIndex = spireTiles.findIndex(function(tile) {
+			return tile.x == xCoord && tile.y == yCoord;
+		});
+		if (spireTileIndex == -1) {
+			spireTiles.push({ x: xCoord, y: yCoord });
+		} else {
+			spireTiles.splice(spireTileIndex, 1);
 		}
 	} 
 	else if (target == 'wall_vertical') {
@@ -608,6 +626,7 @@ function editMap(clientX, clientY, target) {
 function outputMap() {
 	offMapTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
 	blockingTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
+	spireTiles.sort(function(a,b) { return a.y - b.y || a.x - b.x; });
 	var mapTitle = $('#map_name').val();
 	var mapSource = $('#map_source').val();
 	var custom_map = {
@@ -616,6 +635,7 @@ function outputMap() {
 		source: mapSource,
 		width: map_width,
 		height: map_height,
+		spireTiles: spireTiles,
 		walls: walls,
 		blockingTiles: blockingTiles,
 		blockingEdges: blockingEdges,
@@ -680,6 +700,17 @@ function drawBlockingTile(tile) {
 		context.fillStyle = 'rgba(157, 5, 181, 0.5)';
 	} else {
 		context.fillStyle = 'rgba(200, 0, 0, 0.5)';
+	}
+	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
+}
+
+function drawSpireTile(tile) {
+	var xCoord = (tile.x * boxWidth) + horizontal_padding;
+	var yCoord = (tile.y * boxWidth) + vertical_padding;
+	if (map_name == 'custom') {
+		context.fillStyle = 'rgba(155, 155, 155, 0.5)';
+	} else {
+		context.fillStyle = 'rgba(155, 155, 155, 0.5)';
 	}
 	context.fillRect(xCoord, yCoord, boxWidth, boxWidth);
 }
