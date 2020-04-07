@@ -78,7 +78,8 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Coruscant_Senate_Office',
 'Development_Facility',
 'Endor_Defense_Station',
-'Lothal_Wastes'];
+'Lothal_Wastes',
+'ISB_Headquarters'];
 var map_image_available = false;
 
 function clearMap(callback) {
