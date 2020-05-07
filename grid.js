@@ -79,7 +79,8 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Development_Facility',
 'Endor_Defense_Station',
 'Lothal_Wastes',
-'ISB_Headquarters'];
+'ISB_Headquarters',
+'Tutorial'];
 var map_image_available = false;
 
 function clearMap(callback) {
