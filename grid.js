@@ -80,7 +80,13 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Endor_Defense_Station',
 'Lothal_Wastes',
 'ISB_Headquarters',
-'Tutorial'];
+'Tutorial',
+'Devaron_Garrison',
+'Imperial_Tower',
+'Jabbas_Palace',
+'Lothal_Battlefront',
+'Lothal_Spaceport'
+];
 var map_image_available = false;
 
 function clearMap(callback) {
