@@ -85,7 +85,15 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Imperial_Tower',
 'Jabbas_Palace',
 'Lothal_Battlefront',
-'Lothal_Spaceport'
+'Lothal_Spaceport',
+'Hangar_Bay',
+'ISB_Training_Grounds',
+'Kashyyyk_Station',
+'Lothal_Safehouse',
+'Nal_Hutta_Swamps',
+'The_Dune_Sea',
+'The_Pit_of_Carkoon',
+'Wasskah_Hunting_Ground'
 ];
 var map_image_available = false;
 
