@@ -93,7 +93,18 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Nal_Hutta_Swamps',
 'The_Dune_Sea',
 'The_Pit_of_Carkoon',
-'Wasskah_Hunting_Ground'
+'Wasskah_Hunting_Ground',
+'Echo_Base',
+'Hoth_Battle_Station',
+'Hoth_Weather_Shelter',
+'Imperial_Command_Hub',
+'Imperial_Space_Station',
+'Mos_Eisley_Cantina',
+'Nelvaanian_Warzone',
+'Sewers_of_Nar_Shaddaa',
+'Training_Ground',
+'Tython_Meditation_Field',
+'Wasteland_Outpost'
 ];
 var map_image_available = false;
 
