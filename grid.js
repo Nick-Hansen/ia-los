@@ -104,7 +104,16 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Sewers_of_Nar_Shaddaa',
 'Training_Ground',
 'Tython_Meditation_Field',
-'Wasteland_Outpost'
+'Wasteland_Outpost',
+'Endor_Wilderness',
+'Geonosis_Foundry',
+'Imperial_Labour_Camp',
+'Imperial_Research_Lab',
+'Kuat_Space_Station',
+'Massassi_Ruins',
+'Moisture_Farm',
+'Mos_Eisley_Outskirts',
+'Ord_Mantell_Junkyard',
 ];
 var map_image_available = false;
 
