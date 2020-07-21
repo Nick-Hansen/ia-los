@@ -1730,6 +1730,7 @@ function intersectionBlocksPath(blockingIntersection, fromTileX, fromTileY, toTi
 			//attack from left
 			else if (deltaX > 0) { 
 				pathBlocked = (topConnection && rightConnection) ||
+					(topConnection && leftConnection) ||
 					(topConnection && bottomConnection);
 			}
 			//attack from right
