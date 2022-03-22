@@ -114,6 +114,9 @@ var map_images = ['Mos_Eisley_Back_Alleys',
 'Moisture_Farm',
 'Mos_Eisley_Outskirts',
 'Ord_Mantell_Junkyard',
+'Hoth_Battlefield',
+'Nal_Hutta_Borderlands',
+'Temple_Gardens',
 ];
 var map_image_available = false;
 
